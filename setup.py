@@ -1,12 +1,13 @@
 import pathlib
 from setuptools import setup, find_namespace_packages
+from dhis2.core import __version__
 
 here = pathlib.Path(__file__).parent.resolve()
 long_description = (here / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="dhis2",
-    version="0.0.1",
+    version=__version__,
     description="Tool for working and integrating with dhis2 instances.",
     long_description=long_description,
     long_description_content_type="text/markdown",
