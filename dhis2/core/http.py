@@ -86,6 +86,8 @@ class BaseHttpRequest:
     def _handle_errors(self, response: Response):
         if 401 == response.status_code:
             log.error(f"Invalid login credentials for '{self.host.key}''")
+        else:
+            log.error(f"Unhandled status code {response.status_code}={response.text}")
 
         return None
 
