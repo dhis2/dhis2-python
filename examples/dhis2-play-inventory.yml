@@ -1,0 +1,21 @@
+hosts:
+  playdev:
+    type: dhis2
+    baseUrl: https://play.dhis2.org/dev
+    username: admin
+    password: district
+  playdemo:
+    type: dhis2
+    baseUrl: https://play.dhis2.org/demo
+    auth:
+      default:
+        type: http-basic
+        username: admin
+        password: district
+  fhirdemo:
+    type: fhir
+    baseUrl: http://localhost:8080/baseR4
+groups:
+  dhis2:
+    - playdev
+    - playdemo
