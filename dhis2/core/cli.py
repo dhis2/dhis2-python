@@ -4,7 +4,7 @@ import click
 from pkg_resources import iter_entry_points
 
 from .inventory import Inventory, parse_file, parse_obj, resolve
-
+from .inspect import inspect
 defaultInventory = {"hosts": {}, "groups": {}}
 
 
@@ -25,6 +25,14 @@ class CliContext(object):
 @click.pass_context
 def cli(ctx, inventory, debug):
     ctx.obj = CliContext(inventory, debug)
+
+
+@cli.command("inspect")
+@click.argument("id")
+@click.pass_obj
+def cmd_inspect(ctx, id):
+    hosts = resolve(id, ctx.inventory)
+    inspect(hosts)
 
 
 @cli.group("inventory")

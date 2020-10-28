@@ -43,6 +43,7 @@ class Host(BaseModel):
 
 class HostResolved(BaseModel):
     type: Union[HostType, str] = HostType.dhis2
+    key: str
     baseUrl: str
     auth: Union[NoopAuthtype, BasicAuthtype]
 
@@ -157,6 +158,7 @@ def resolve(id: str, inventory: Inventory) -> List[HostResolved]:
 
         hr = HostResolved(
             type=value.type,
+            key=key,
             baseUrl=value.baseUrl,
             auth=auth,
         )

@@ -12,8 +12,8 @@
       "auth": {
         "default": {
           "type": "http-basic",
-          "username": "admin",
-          "password": "district"
+          "username": "system",
+          "password": "System123"
         }
       }
     },
