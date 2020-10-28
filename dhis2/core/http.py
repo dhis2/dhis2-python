@@ -1,3 +1,4 @@
+import json
 import logging
 from copy import deepcopy
 from enum import Enum
@@ -63,7 +64,10 @@ class BaseHttpRequest:
         auth = self._get_auth()
         params = self._get_params(params)
 
-        response = requests.get(
+        if not isinstance(data, str):
+            data = json.dumps(data)
+
+        response = requests.post(
             url=url,
             headers=headers,
             params=params,

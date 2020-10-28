@@ -1,2 +1,4 @@
 source:
   id: playdev
+target:
+  id: fhirdemo

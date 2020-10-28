@@ -19,7 +19,7 @@
     },
     "fhirdemo": {
       "type": "fhir",
-      "baseUrl": "http://localhost:8080/baseR4"
+      "baseUrl": "http://localhost:8080"
     }
   },
   "groups": {
