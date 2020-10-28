@@ -21,7 +21,7 @@ setup(
         "Programming Language :: Python :: 3.8",
     ],
     # package_dir={'': 'src'},
-    packages=find_namespace_packages(where=".", include=["dhis2.*"]),
+    packages=find_namespace_packages(where=".", include=["dhis2"]),
     python_requires=">=3.8, <4",  # we might want to adjust this, starting low for now
     include_package_data=True,
     install_requires=["pyyaml", "click", "requests", "pydantic", "fhir.resources"],
