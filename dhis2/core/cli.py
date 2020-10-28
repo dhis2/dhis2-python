@@ -1,10 +1,12 @@
 import os
 
 import click
+import dhis2.openhie.cli as cli_openhie
 from pkg_resources import iter_entry_points
 
-from .inventory import Inventory, parse_file, parse_obj, resolve
 from .inspect import inspect
+from .inventory import Inventory, parse_file, parse_obj, resolve
+
 defaultInventory = {"hosts": {}, "groups": {}}
 
 
@@ -54,6 +56,8 @@ def cmd_inventory_resolve(ctx, id):
     for host in hosts:
         print(host.json())
 
+
+cli_openhie.register_cli(cli)  # register "openhie" plugin
 
 # register additional plugins
 for entry_point in iter_entry_points(group="dhis2.plugin", name=None):

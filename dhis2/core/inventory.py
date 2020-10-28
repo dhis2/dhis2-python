@@ -52,7 +52,7 @@ class Inventory(BaseModel):
     hosts: Dict[str, Host]
     groups: Dict[str, List[str]]
 
-    def get_by_id(self, ids) -> Host:
+    def get_many_by_id(self, ids) -> Dict[str, Host]:
         if not isinstance(ids, (list, set, tuple)):
             ids = [ids]
 
@@ -69,6 +69,14 @@ class Inventory(BaseModel):
                         hosts[gid] = self.hosts.get(gid)
 
         return hosts
+
+    def get_one_by_id(self, id):
+        hosts = self.get_many_by_id(id)
+
+        if not hosts or len(hosts) > 1:
+            print(f"got {len(hosts)} results for host id")
+
+        return hosts[0]
 
 
 def _process_inventory_data(inventory: Dict[str, Any]):
@@ -142,7 +150,7 @@ def resolve(id: str, inventory: Inventory) -> List[HostResolved]:
     id = normalize(id)
     id_parsed = urlparse(id)
 
-    hosts = inventory.get_by_id(id_parsed.hostname)
+    hosts = inventory.get_many_by_id(id_parsed.hostname)
     host_resolved = []
 
     for host in hosts.items():
@@ -166,3 +174,12 @@ def resolve(id: str, inventory: Inventory) -> List[HostResolved]:
         host_resolved.append(hr)
 
     return host_resolved
+
+
+def resolve_one(id: str, inventory: Inventory):
+    hosts = resolve(id, inventory)
+
+    if not hosts or len(hosts) > 1:
+        print(f"got {len(hosts)} results for host id")
+
+    return hosts[0]
