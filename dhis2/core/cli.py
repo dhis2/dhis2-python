@@ -1,7 +1,7 @@
 import os
 
 import click
-import dhis2.openhie.cli as cli_openhie
+import dhis2.fhir.cli as cli_fhir
 from pkg_resources import iter_entry_points
 
 from .inspect import inspect
@@ -57,7 +57,7 @@ def cmd_inventory_resolve(ctx, id):
         print(host.json())
 
 
-cli_openhie.register_cli(cli)  # register "openhie" plugin
+cli_fhir.register_cli(cli)  # register "fhir" plugin
 
 # register additional plugins
 for entry_point in iter_entry_points(group="dhis2.plugin", name=None):
