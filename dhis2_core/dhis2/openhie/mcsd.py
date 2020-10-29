@@ -6,20 +6,20 @@ from uuid import uuid4
 
 from dhis2.core.http import BaseHttpRequest
 from dhis2.core.inventory import HostResolved, Inventory, resolve_one
-from dhis2.fhir.resources.svcm import build_bundle
+from dhis2.openhie.resources.mcsd import build_bundle
 from fhir.resources.bundle import Bundle
 from pydantic import BaseModel, Field
 
 log = logging.getLogger(__name__)
 
 
-class SVCMConfig(BaseModel):
+class MCSDConfig(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid4()))
     source: Dict[str, Any] = dict()
     target: Dict[str, Any] = dict()
 
 
-def get_source(config: SVCMConfig, inventory: Inventory) -> Callable[[Any], Any]:
+def get_source(config: MCSDConfig, inventory: Inventory) -> Callable[[Any], Any]:
     id = config.source["id"]
     host = resolve_one(id, inventory)
 
@@ -29,13 +29,14 @@ def get_source(config: SVCMConfig, inventory: Inventory) -> Callable[[Any], Any]
 
     log.info(f"Creating source from '{host.key}' with base url '{host.baseUrl}'")
 
-    def fn():
+    def call():
         source_filters = config.source.get("filters", [])
+        req = BaseHttpRequest(host)
 
-        data = BaseHttpRequest(host).get(
-            "api/optionSets",
+        data = req.get(
+            "api/organisationUnits",
             params={
-                "fields": "id,code,version,name,options[id,name,code]",
+                "fields": "id,code,name,geometry,parent[id]",
                 "rootJunction": "OR",
                 "filter": list(map(lambda x: f"id:eq:{x}", source_filters)),
                 "paging": False,
@@ -47,10 +48,10 @@ def get_source(config: SVCMConfig, inventory: Inventory) -> Callable[[Any], Any]
             data,
         )
 
-    return fn
+    return call
 
 
-def get_target(config: SVCMConfig, inventory: Inventory) -> Callable[[Any], Any]:
+def get_target(config: MCSDConfig, inventory: Inventory) -> Callable[[Any], Any]:
     id = config.target["id"]
 
     if "log://" == id:
@@ -85,18 +86,18 @@ def get_target(config: SVCMConfig, inventory: Inventory) -> Callable[[Any], Any]
     return fn
 
 
-def transform(config: SVCMConfig, data: Any):
+def transform(config: MCSDConfig, data: Any):
     host: HostResolved = data[0]
     payload: Dict[str, Any] = data[1]
 
     return (
         host,
-        build_bundle(payload.get("optionSets", []), host.baseUrl),
+        build_bundle(payload.get("organisationUnits", []), host.baseUrl),
     )
 
 
-def run(config: SVCMConfig, inventory: Inventory):
-    log.info(f"SVCM job '{config.id}'' starting")
+def run(config: MCSDConfig, inventory: Inventory):
+    log.info(f"mCSD job '{config.id}'' starting")
 
     source = get_source(config, inventory)
     target = get_target(config, inventory)
@@ -106,4 +107,4 @@ def run(config: SVCMConfig, inventory: Inventory):
     data = target(data)
 
     log.info(f"Got response from target system {data}")
-    log.info(f"SVCM job '{config.id}'' finished")
+    log.info(f"mCSD job '{config.id}'' finished")

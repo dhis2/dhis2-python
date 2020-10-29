@@ -1,22 +1,22 @@
 import logging
 
 import click
-import dhis2.fhir.mcsd as mcsd
-import dhis2.fhir.svcm as svcm
+import dhis2.openhie.mcsd as mcsd
+import dhis2.openhie.svcm as svcm
 from dhis2.core.utils import parse_file
 
 log = logging.getLogger(__name__)
 
 
-@click.group("fhir")
-def cli_fhir():
+@click.group("openhie")
+def cli_openhie():
     pass
 
 
-@cli_fhir.command("mcsd")
+@cli_openhie.command("mcsd")
 @click.argument("config")
 @click.pass_obj
-def cmd_fhir_mcsd(ctx, config: str):
+def cmd_openhie_mcsd(ctx, config: str):
     """ Mobile Care Services Discovery (mCSD) """
     mcsd_config = {
         "source": {},
@@ -35,10 +35,10 @@ def cmd_fhir_mcsd(ctx, config: str):
     mcsd.run(mcsd.MCSDConfig(**mcsd_config), ctx.inventory)
 
 
-@cli_fhir.command("svcm")
+@cli_openhie.command("svcm")
 @click.argument("config")
 @click.pass_obj
-def cmd_fhir_svcm(ctx, config: str):
+def cmd_openhie_svcm(ctx, config: str):
     """ Sharing Valuesets, Codes, and Maps (SVCM) """
     svcm_config = {
         "source": {},
@@ -58,4 +58,4 @@ def cmd_fhir_svcm(ctx, config: str):
 
 
 def register_cli(cli):
-    cli.add_command(cli_fhir)
+    cli.add_command(cli_openhie)
