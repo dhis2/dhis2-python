@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 class Property(BaseModel):
     fieldName: Optional[str]
+    description: Optional[str]
     simple: bool
     required: bool
     writable: bool

@@ -1,12 +1,13 @@
 import json
-from pathlib import Path
-from typing import Any, Dict
 import logging
+from pathlib import Path
+from typing import Any, Dict, List
+
 from yaml import load as load
 
 from .http import BaseHttpRequest
 from .inventory import HostResolved
-from .models.schema import Schemas
+from .models.schema import Schema, Schemas
 
 try:
     from yaml import CLoader as Loader
@@ -36,7 +37,7 @@ def parse_file(filename: str) -> Dict[str, Any]:
     return data
 
 
-def load_and_parse_schema(host: HostResolved):
+def load_and_parse_schema(host: HostResolved) -> List[Schema]:
     if "dhis2" not in host.type:
         log.error(f"'{host.key}' is of unsupported type '{host.type}', only 'dhis2' is supported for this command")
         return None
@@ -46,4 +47,4 @@ def load_and_parse_schema(host: HostResolved):
 
     schemas = Schemas(**data)
 
-    return schemas
+    return schemas.schemas

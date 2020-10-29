@@ -1,12 +1,12 @@
 import os
 
 import click
+import dhis2.generator.cli as cli_generator
 import dhis2.openhie.cli as cli_openhie
 from pkg_resources import iter_entry_points
 
 from .inspect import inspect
-from .inventory import Inventory, parse_file, parse_obj, resolve, resolve_one
-from .utils import load_and_parse_schema
+from .inventory import Inventory, parse_file, parse_obj, resolve
 
 defaultInventory = {"hosts": {}, "groups": {}}
 
@@ -38,18 +38,6 @@ def cmd_inspect(ctx, id):
     inspect(hosts)
 
 
-@cli.command("schemas")
-@click.argument("id")
-@click.pass_obj
-def cmd_schemas(ctx, id):  # TODO remove me, probably of no real use for anyone
-    """ Load and parse dhis2 schema endpoint """
-    host = resolve_one(id, ctx.inventory)
-    schemas = load_and_parse_schema(host)
-
-    if schemas:
-        click.echo(schemas.json(indent=2))
-
-
 @cli.group("inventory")
 def cli_inventory():
     pass
@@ -70,7 +58,8 @@ def cmd_inventory_resolve(ctx, id):
         print(host.json())
 
 
-cli_openhie.register_cli(cli)  # register "fhir" plugin
+cli_openhie.register_cli(cli)  # register "openhie" plugin
+cli_generator.register_cli(cli)  # register "generator" plugin
 
 # register additional plugins
 for entry_point in iter_entry_points(group="dhis2.plugin", name=None):
