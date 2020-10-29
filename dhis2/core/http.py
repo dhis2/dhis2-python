@@ -40,6 +40,8 @@ class BaseHttpRequest:
             auth=auth,
         )
 
+        log.info(f"Finished GET request '{response.request.url}'' with status code '{response.status_code}''")
+
         if not response.ok:
             return self._handle_errors(response)
 
@@ -74,6 +76,8 @@ class BaseHttpRequest:
             auth=auth,
             data=data,
         )
+
+        log.info(f"Finished POST request '{response.request.url}'' with status code '{response.status_code}''")
 
         if not response.ok:
             return self._handle_errors(response)

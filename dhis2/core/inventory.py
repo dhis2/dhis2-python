@@ -126,7 +126,7 @@ def parse_obj(data: Dict[str, Any]) -> Inventory:
 
 def normalize(id: str):
     if "://" not in id:
-        id = f"type://{id}"
+        id = f"http://{id}"
 
     id_parsed = urlparse(id)
     normalized = ""
@@ -134,7 +134,7 @@ def normalize(id: str):
     if id_parsed.scheme:
         normalized = f"{id_parsed.scheme}://"
     else:
-        normalized = "type://"
+        normalized = "http://"
 
     if id_parsed.username:
         normalized += f"{id_parsed.username}@"

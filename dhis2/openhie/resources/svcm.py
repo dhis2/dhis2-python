@@ -1,7 +1,11 @@
+import logging
+
 from fhir.resources.bundle import Bundle, BundleEntry, BundleEntryRequest
 from fhir.resources.codesystem import CodeSystem, CodeSystemConcept
 from fhir.resources.identifier import Identifier
 from fhir.resources.valueset import ValueSet, ValueSetCompose, ValueSetComposeInclude
+
+log = logging.getLogger(__name__)
 
 
 def build_svcm_codesystem(option_set, base_url) -> CodeSystem:
@@ -91,6 +95,8 @@ def build_bundle(option_sets, base_url):
     bundle = Bundle()
     bundle.type = "transaction"
     bundle.entry = []
+
+    log.info(f"Building FHIR bundle from '{len(option_sets)}' option sets")
 
     for option_set in option_sets:
         bundle.entry.append(build_value_set_bundle_entry(option_set, base_url))

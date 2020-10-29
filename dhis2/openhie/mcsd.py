@@ -1,6 +1,7 @@
 import json
 import logging
-from typing import Any, Dict
+import sys
+from typing import Any, Callable, Dict
 from uuid import uuid4
 
 from dhis2.core.http import BaseHttpRequest
@@ -18,9 +19,15 @@ class MCSDConfig(BaseModel):
     target: Dict[str, Any] = dict()
 
 
-def get_source(config: MCSDConfig, inventory: Inventory):
+def get_source(config: MCSDConfig, inventory: Inventory) -> Callable[[Any], Any]:
     id = config.source["id"]
     host = resolve_one(id, inventory)
+
+    if "dhis2" not in host.type:
+        log.error("Only 'dhis2' source type is currently supported")
+        sys.exit(-1)
+
+    log.info(f"Creating source from '{host.key}' with base url '{host.baseUrl}'")
 
     def call():
         req = BaseHttpRequest(host)
@@ -42,17 +49,33 @@ def get_source(config: MCSDConfig, inventory: Inventory):
     return call
 
 
-def get_target(config: MCSDConfig, inventory: Inventory):
+def get_target(config: MCSDConfig, inventory: Inventory) -> Callable[[Any], Any]:
     id = config.target["id"]
 
     if "log://" == id:
+
+        log.info("Creating 'log://' target")
 
         def fn(data: Any):
             print(json.dumps(data[1].as_json(), indent=2))
 
         return fn
+    elif "null://" == id:
+
+        log.info("Creating 'null://' target")
+
+        def fn(data: Any):
+            pass
+
+        return fn
 
     host = resolve_one(id, inventory)
+
+    if "dhis2" in host.type:
+        log.error("'dhis2' target type is not currently supported")
+        sys.exit(-1)
+
+    log.info(f"Creating target from '{host.key}' with base url '{host.baseUrl}'")
 
     def fn(data: Any):
         payload: Bundle = data[1]
@@ -72,9 +95,13 @@ def transform(config: MCSDConfig, data: Any):
 
 
 def run(config: MCSDConfig, inventory: Inventory):
+    log.info(f"mCSD job '{config.id}'' starting")
+
     source = get_source(config, inventory)
     target = get_target(config, inventory)
 
     data = source()
     data = transform(config, data)
     target(data)
+
+    log.info(f"mCSD job '{config.id}'' finished")

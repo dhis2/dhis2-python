@@ -1,4 +1,5 @@
 import json
+import logging
 from base64 import b64encode
 
 from fhir.resources.attachment import Attachment
@@ -11,6 +12,8 @@ from fhir.resources.identifier import Identifier
 from fhir.resources.location import Location, LocationPosition
 from fhir.resources.meta import Meta
 from fhir.resources.organization import Organization
+
+log = logging.getLogger(__name__)
 
 
 def build_mcsd_location(org_unit, base_url) -> Location:
@@ -129,6 +132,8 @@ def build_bundle(org_units, base_url):
     bundle = Bundle()
     bundle.type = "transaction"
     bundle.entry = []
+
+    log.info(f"Building FHIR bundle from '{len(org_units)}' organisation units")
 
     for org_unit in org_units:
         bundle.entry.append(build_location_bundle_entry(org_unit, base_url))

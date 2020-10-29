@@ -1,5 +1,6 @@
 import json
 import logging
+import sys
 from typing import Any, Callable, Dict
 from uuid import uuid4
 
@@ -21,6 +22,12 @@ class SVCMConfig(BaseModel):
 def get_source(config: SVCMConfig, inventory: Inventory) -> Callable[[Any], Any]:
     id = config.source["id"]
     host = resolve_one(id, inventory)
+
+    if "dhis2" not in host.type:
+        log.error("Only 'dhis2' source type is currently supported")
+        sys.exit(-1)
+
+    log.info(f"Creating source from '{host.key}' with base url '{host.baseUrl}'")
 
     def fn():
         data = BaseHttpRequest(host).get(
@@ -46,12 +53,28 @@ def get_target(config: SVCMConfig, inventory: Inventory) -> Callable[[Any], Any]
 
     if "log://" == id:
 
+        log.info("Creating 'log://' target")
+
         def fn(data: Any):
             print(json.dumps(data[1].as_json(), indent=2))
 
         return fn
+    elif "null://" == id:
+
+        log.info("Creating 'null://' target")
+
+        def fn(data: Any):
+            pass
+
+        return fn
 
     host = resolve_one(id, inventory)
+
+    if "dhis2" in host.type:
+        log.error("'dhis2' target type is not currently supported")
+        sys.exit(-1)
+
+    log.info(f"Creating target from '{host.key}' with base url '{host.baseUrl}'")
 
     def fn(data: Any):
         payload: Bundle = data[1]
@@ -71,9 +94,13 @@ def transform(config: SVCMConfig, data: Any):
 
 
 def run(config: SVCMConfig, inventory: Inventory):
+    log.info(f"SVCM job '{config.id}'' starting")
+
     source = get_source(config, inventory)
     target = get_target(config, inventory)
 
     data = source()
     data = transform(config, data)
     target(data)
+
+    log.info(f"SVCM job '{config.id}'' finished")
