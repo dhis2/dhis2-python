@@ -5,7 +5,8 @@ import dhis2.openhie.cli as cli_openhie
 from pkg_resources import iter_entry_points
 
 from .inspect import inspect
-from .inventory import Inventory, parse_file, parse_obj, resolve
+from .inventory import Inventory, parse_file, parse_obj, resolve, resolve_one
+from .utils import load_and_parse_schema
 
 defaultInventory = {"hosts": {}, "groups": {}}
 
@@ -35,6 +36,18 @@ def cli(ctx, inventory, debug):
 def cmd_inspect(ctx, id):
     hosts = resolve(id, ctx.inventory)
     inspect(hosts)
+
+
+@cli.command("schemas")
+@click.argument("id")
+@click.pass_obj
+def cmd_schemas(ctx, id):  # TODO remove me, probably of no real use for anyone
+    """ Load and parse dhis2 schema endpoint """
+    host = resolve_one(id, ctx.inventory)
+    schemas = load_and_parse_schema(host)
+
+    if schemas:
+        click.echo(schemas.json(indent=2))
 
 
 @cli.group("inventory")

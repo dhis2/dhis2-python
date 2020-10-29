@@ -180,6 +180,7 @@ def resolve_one(id: str, inventory: Inventory):
     hosts = resolve(id, inventory)
 
     if not hosts or len(hosts) > 1:
-        print(f"got {len(hosts)} results for host id")
+        log.error("Expected only one result from inventory (did you use a group id?)")
+        sys.exit(-1)
 
     return hosts[0]
