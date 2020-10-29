@@ -1,12 +1,12 @@
 import json
 import logging
+import sys
 from enum import Enum
 from typing import Any, Dict, List, Literal, Optional, Union
 from urllib.parse import urlparse
 
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, Field, ValidationError
 from yaml import load as load
-import sys
 
 try:
     from yaml import CLoader as Loader
@@ -50,7 +50,7 @@ class HostResolved(BaseModel):
 
 class Inventory(BaseModel):
     hosts: Dict[str, Host]
-    groups: Dict[str, List[str]]
+    groups: Dict[str, List[str]] = Field(default_factory=dict)
 
     def get_many_by_id(self, ids) -> Dict[str, Host]:
         if not isinstance(ids, (list, set, tuple)):
