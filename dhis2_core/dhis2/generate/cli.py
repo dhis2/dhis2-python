@@ -1,9 +1,11 @@
-import logging
 import json
+import logging
+
 import click
 from dhis2.core.inventory import resolve_one
 from dhis2.core.utils import load_and_parse_schema
-from dhis2.generator.json_schema import generate_json_schema_metadata
+
+from .json_schema import generate_json_schema_metadata
 
 log = logging.getLogger(__name__)
 

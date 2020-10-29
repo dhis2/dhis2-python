@@ -1,7 +1,7 @@
 import os
 
 import click
-import dhis2.generator.cli as cli_generator
+import dhis2.generate.cli as cli_generator
 import dhis2.openhie.cli as cli_openhie
 from pkg_resources import iter_entry_points
 
