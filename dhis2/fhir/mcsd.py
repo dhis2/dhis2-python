@@ -30,13 +30,15 @@ def get_source(config: MCSDConfig, inventory: Inventory) -> Callable[[Any], Any]
     log.info(f"Creating source from '{host.key}' with base url '{host.baseUrl}'")
 
     def call():
+        source_filters = config.source.get("filters", [])
         req = BaseHttpRequest(host)
+
         data = req.get(
             "api/organisationUnits",
             params={
                 "fields": "id,code,name,geometry,parent[id]",
                 "rootJunction": "OR",
-                # "filter": list(map(lambda x: f"id:eq:{x}", source_filters)),
+                "filter": list(map(lambda x: f"id:eq:{x}", source_filters)),
                 "paging": False,
             },
         )
@@ -102,6 +104,7 @@ def run(config: MCSDConfig, inventory: Inventory):
 
     data = source()
     data = transform(config, data)
-    target(data)
+    data = target(data)
 
+    log.info(f"Got response from target system {data}")
     log.info(f"mCSD job '{config.id}'' finished")

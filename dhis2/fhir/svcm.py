@@ -30,12 +30,14 @@ def get_source(config: SVCMConfig, inventory: Inventory) -> Callable[[Any], Any]
     log.info(f"Creating source from '{host.key}' with base url '{host.baseUrl}'")
 
     def fn():
+        source_filters = config.source.get("filters", [])
+
         data = BaseHttpRequest(host).get(
             "api/optionSets",
             params={
                 "fields": "id,code,version,name,options[id,name,code]",
                 "rootJunction": "OR",
-                # "filter": list(map(lambda x: f"id:eq:{x}", source_filters)),
+                "filter": list(map(lambda x: f"id:eq:{x}", source_filters)),
                 "paging": False,
             },
         )
@@ -101,6 +103,7 @@ def run(config: SVCMConfig, inventory: Inventory):
 
     data = source()
     data = transform(config, data)
-    target(data)
+    data = target(data)
 
+    log.info(f"Got response from target system {data}")
     log.info(f"SVCM job '{config.id}'' finished")

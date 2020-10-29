@@ -82,8 +82,6 @@ class BaseHttpRequest:
         if not response.ok:
             return self._handle_errors(response)
 
-        data = None
-
         if MediaFormat.json == self.format:
             data = response.json()
         else:
@@ -94,6 +92,8 @@ class BaseHttpRequest:
     def _handle_errors(self, response: Response):
         if 401 == response.status_code:
             log.error(f"Invalid login credentials for '{self.host.key}''")
+        if 404 == response.status_code:
+            log.error(f"Invalid url '{response.request.url}', please check 'baseUrl' for '{self.host.key}'")
         else:
             log.error(f"Unhandled status code {response.status_code}={response.text}")
 
