@@ -43,7 +43,7 @@ def load_and_parse_schema(host: HostResolved) -> List[Schema]:
         return None
 
     req = BaseHttpRequest(host)
-    data = req.get("/api/schemas")
+    data = req.get("api/schemas")
 
     schemas = Schemas(**data)
 
