@@ -28,7 +28,7 @@ def get_source(config: MCSDConfig, inventory: Inventory) -> Callable[[Any], Any]
         data = req.get(
             "api/organisationUnits",
             params={
-                "fields": "id,code,name,geometry,parent[id]",
+                "fields": "id,code,name,translations,geometry,parent[id]",
                 "rootJunction": "OR",
                 "filter": list(map(lambda x: f"id:eq:{x}", config.source.filters)),
                 "paging": False,

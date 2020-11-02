@@ -1,6 +1,7 @@
 from typing import List, Literal, Optional, Union
 from uuid import uuid4
 
+from dhis2.core.metadata.models import Translation
 from pydantic import BaseModel, Field
 
 
@@ -47,8 +48,9 @@ class SVCMConfig(BaseModel):
 
 class Code(BaseModel):
     id: str
-    name: str
     code: str
+    name: str
+    translations: List[Translation] = []
 
 
 class CodeList(BaseModel):
@@ -56,5 +58,6 @@ class CodeList(BaseModel):
     code: Optional[str]
     type: Literal["optionSets", "categories"] = "optionSets"
     name: str
+    translations: List[Translation] = []
     version: Union[str, int] = "1"
     codes: List[Code] = []

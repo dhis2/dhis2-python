@@ -26,7 +26,7 @@ def get_source(config: SVCMConfig, inventory: Inventory) -> Callable[[Any], Any]
         option_sets = BaseHttpRequest(host).get(
             "api/optionSets",
             params={
-                "fields": "id,code,version,name,options[id,name,code]",
+                "fields": "id,code,name,version,translations,options[id,code,name,translations]",
                 "rootJunction": "OR",
                 "filter": list(map(lambda x: f"id:eq:{x}", config.source.filters.optionSets)),
                 "paging": False,
@@ -36,7 +36,7 @@ def get_source(config: SVCMConfig, inventory: Inventory) -> Callable[[Any], Any]
         categories = BaseHttpRequest(host).get(
             "api/categories",
             params={
-                "fields": "id,code,name,categoryOptions::rename(options)[id,name,code]",
+                "fields": "id,code,name,translations,categoryOptions::rename(options)[id,code,name,translations]",
                 "rootJunction": "OR",
                 "filter": list(map(lambda x: f"id:eq:{x}", config.source.filters.categories)),
                 "paging": False,
