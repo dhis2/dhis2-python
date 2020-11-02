@@ -1,4 +1,9 @@
 source:
   id: playdev
+  filters:
+    optionSets:
+      - VQ2lai3OfVG
+    categories:
+      - cX5k9anHEHd
 target:
   id: fhirdemo
