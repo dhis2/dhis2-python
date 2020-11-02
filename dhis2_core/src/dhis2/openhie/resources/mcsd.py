@@ -1,7 +1,8 @@
-import json
 import logging
 from base64 import b64encode
+from typing import List
 
+from dhis2.openhie.models import OrgUnit
 from fhir.resources.attachment import Attachment
 from fhir.resources.bundle import Bundle, BundleEntry, BundleEntryRequest
 from fhir.resources.codeableconcept import CodeableConcept
@@ -16,19 +17,17 @@ from fhir.resources.organization import Organization
 log = logging.getLogger(__name__)
 
 
-def is_facility(org_unit):
-    if geometry := org_unit.get("geometry"):
-        if "Point" == geometry.get("type"):
+def is_facility(org_unit: OrgUnit):
+    if geometry := org_unit.geometry:
+        if "Point" == geometry.type:
             return True
 
     return False
 
 
-def build_mcsd_location(org_unit, base_url) -> Location:
-    id = org_unit.get("id")
-
+def build_mcsd_location(org_unit: OrgUnit, base_url) -> Location:
     resource = Location()
-    resource.id = id
+    resource.id = org_unit.id
     resource.meta = Meta()
     resource.meta.profile = [
         "http://ihe.net/fhir/StructureDefinition/IHE_mCSD_Location",
@@ -36,17 +35,17 @@ def build_mcsd_location(org_unit, base_url) -> Location:
 
     resource.identifier = [Identifier()]
     resource.identifier[0].system = f"{base_url}/api/organisationUnits"
-    resource.identifier[0].value = id
+    resource.identifier[0].value = org_unit.id
 
-    if org_unit.get("code"):
+    if org_unit.code:
         identifier = Identifier()
         identifier.system = f"{base_url}/api/organisationUnits"
-        identifier.value = org_unit.get("code")
+        identifier.value = org_unit.code
 
         resource.identifier.append(identifier)
 
-    resource.name = org_unit.get("name")
-    resource.description = org_unit.get("name")
+    resource.name = org_unit.name
+    resource.description = org_unit.name
     resource.type = [CodeableConcept()]
     resource.type[0].text = "OF"
     resource.status = "active"
@@ -58,17 +57,18 @@ def build_mcsd_location(org_unit, base_url) -> Location:
     resource.physicalType.coding[0].code = "si"
 
     resource.managingOrganization = FHIRReference()
-    resource.managingOrganization.reference = f"Organization/{id}"
+    resource.managingOrganization.reference = f"Organization/{org_unit.id}"
 
-    if "parent" in org_unit:
+    if org_unit.parent:
         resource.partOf = FHIRReference()
-        resource.partOf.reference = f"Location/{org_unit.get('parent').get('id')}"
+        resource.partOf.reference = f"Location/{org_unit.parent.id}"
 
-    if "geometry" in org_unit:
-        geometry = org_unit.get("geometry")
+    if org_unit.geometry:
+        geometry = org_unit.geometry
+        geometry_str = geometry.json().encode("utf-8")
 
-        if "Point" == geometry.get("type"):
-            coordinates = geometry.get("coordinates")
+        if "Point" == geometry.type:
+            coordinates = geometry.coordinates
             resource.position = LocationPosition()
             resource.position.latitude = coordinates[1]
             resource.position.longitude = coordinates[0]
@@ -77,16 +77,14 @@ def build_mcsd_location(org_unit, base_url) -> Location:
         resource.extension[0].url = "http://hl7.org/fhir/StructureDefinition/location-boundary-geojson"
         resource.extension[0].valueAttachment = Attachment()
         resource.extension[0].valueAttachment.contentType = "application/geo+json"
-        resource.extension[0].valueAttachment.data = str(b64encode(json.dumps(geometry).encode("utf-8")), "utf-8")
+        resource.extension[0].valueAttachment.data = str(b64encode(geometry_str), "utf-8")
 
     return resource
 
 
-def build_mcsd_organization(org_unit, base_url) -> Organization:
-    id = org_unit.get("id")
-
+def build_mcsd_organization(org_unit: OrgUnit, base_url) -> Organization:
     resource = Organization()
-    resource.id = id
+    resource.id = org_unit.id
     resource.meta = Meta()
     resource.meta.profile = [
         "http://ihe.net/fhir/StructureDefinition/IHE_mCSD_Organization",
@@ -97,16 +95,16 @@ def build_mcsd_organization(org_unit, base_url) -> Organization:
 
     resource.identifier = [Identifier()]
     resource.identifier[0].system = f"{base_url}/api/organisationUnits"
-    resource.identifier[0].value = id
+    resource.identifier[0].value = org_unit.id
 
-    if org_unit.get("code"):
+    if org_unit.code:
         identifier = Identifier()
         identifier.system = f"{base_url}/api/organisationUnits"
-        identifier.value = org_unit.get("code")
+        identifier.value = org_unit.code
 
         resource.identifier.append(identifier)
 
-    resource.name = org_unit.get("name")
+    resource.name = org_unit.name
     resource.type = []
 
     c1 = CodeableConcept()
@@ -127,33 +125,31 @@ def build_mcsd_organization(org_unit, base_url) -> Organization:
     return resource
 
 
-def build_location_bundle_entry(org_unit, base_url):
-    id = org_unit.get("id")
+def build_location_bundle_entry(org_unit: OrgUnit, base_url):
     entry = BundleEntry()
 
     entry.request = BundleEntryRequest()
     entry.request.method = "PUT"
-    entry.request.url = f"Location?identifier={id}"
+    entry.request.url = f"Location?identifier={org_unit.id}"
 
     entry.resource = build_mcsd_location(org_unit, base_url)
 
     return entry
 
 
-def build_organization_bundle_entry(org_unit, base_url):
-    id = org_unit.get("id")
+def build_organization_bundle_entry(org_unit: OrgUnit, base_url):
     entry = BundleEntry()
 
     entry.request = BundleEntryRequest()
     entry.request.method = "PUT"
-    entry.request.url = f"Organization?identifier={id}"
+    entry.request.url = f"Organization?identifier={org_unit.id}"
 
     entry.resource = build_mcsd_organization(org_unit, base_url)
 
     return entry
 
 
-def build_bundle(org_units, base_url):
+def build_bundle(org_units: List[OrgUnit], base_url):
     bundle = Bundle()
     bundle.type = "transaction"
     bundle.entry = []

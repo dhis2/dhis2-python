@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Union
+from typing import Any, List, Literal, Optional, Union
 from uuid import uuid4
 
 from dhis2.core.metadata.models import Translation
@@ -46,18 +46,28 @@ class SVCMConfig(BaseModel):
     target: SVCMTarget
 
 
-class Code(BaseModel):
-    id: str
-    code: str
-    name: str
-    translations: List[Translation] = []
-
-
-class CodeList(BaseModel):
+class BaseEntity(BaseModel):
     id: str
     code: Optional[str]
-    type: Literal["optionSets", "categories"] = "optionSets"
-    name: str
+    name: Optional[str]
     translations: List[Translation] = []
+
+
+class Code(BaseEntity):
+    pass
+
+
+class CodeList(BaseEntity):
+    type: Literal["optionSets", "categories"] = "optionSets"
     version: Union[str, int] = "1"
     codes: List[Code] = []
+
+
+class OrgUnitGeometry(BaseModel):
+    type: str
+    coordinates: List[Any] = []
+
+
+class OrgUnit(BaseEntity):
+    geometry: Optional[OrgUnitGeometry]
+    parent: Optional[BaseEntity]

@@ -1,13 +1,13 @@
 import json
 import logging
 import sys
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, List
 
 from dhis2.core.http import BaseHttpRequest
 from dhis2.core.inventory import HostResolved, Inventory, resolve_one
 from fhir.resources.bundle import Bundle
 
-from .models import MCSDConfig
+from .models import OrgUnit, MCSDConfig
 from .resources.mcsd import build_bundle
 
 log = logging.getLogger(__name__)
@@ -28,7 +28,7 @@ def get_source(config: MCSDConfig, inventory: Inventory) -> Callable[[Any], Any]
         data = req.get(
             "api/organisationUnits",
             params={
-                "fields": "id,code,name,translations,geometry,parent[id]",
+                "fields": "id,code,name,translations,geometry,parent[id,code]",
                 "rootJunction": "OR",
                 "filter": list(map(lambda x: f"id:eq:{x}", config.source.filters)),
                 "paging": False,
@@ -83,9 +83,14 @@ def transform(config: MCSDConfig, data: Any):
     host: HostResolved = data[0]
     payload: Dict[str, Any] = data[1]
 
+    org_units: List[OrgUnit] = []
+
+    for org_unit in payload.get("organisationUnits", []):
+        org_units.append(OrgUnit(**org_unit))
+
     return (
         host,
-        build_bundle(payload.get("organisationUnits", []), host.baseUrl),
+        build_bundle(org_units, host.baseUrl),
     )
 
 
