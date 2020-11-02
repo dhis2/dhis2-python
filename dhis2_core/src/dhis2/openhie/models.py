@@ -1,4 +1,4 @@
-from typing import List, Literal, Union
+from typing import List, Literal, Optional, Union
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
@@ -53,6 +53,7 @@ class Code(BaseModel):
 
 class CodeList(BaseModel):
     id: str
+    code: Optional[str]
     type: Literal["optionSets", "categories"] = "optionSets"
     name: str
     version: Union[str, int] = "1"

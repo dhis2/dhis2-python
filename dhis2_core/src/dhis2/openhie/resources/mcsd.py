@@ -38,6 +38,13 @@ def build_mcsd_location(org_unit, base_url) -> Location:
     resource.identifier[0].system = f"{base_url}/api/organisationUnits"
     resource.identifier[0].value = id
 
+    if org_unit.get("code"):
+        identifier = Identifier()
+        identifier.system = f"{base_url}/api/organisationUnits"
+        identifier.value = org_unit.get("code")
+
+        resource.identifier.append(identifier)
+
     resource.name = org_unit.get("name")
     resource.description = org_unit.get("name")
     resource.type = [CodeableConcept()]
@@ -91,6 +98,13 @@ def build_mcsd_organization(org_unit, base_url) -> Organization:
     resource.identifier = [Identifier()]
     resource.identifier[0].system = f"{base_url}/api/organisationUnits"
     resource.identifier[0].value = id
+
+    if org_unit.get("code"):
+        identifier = Identifier()
+        identifier.system = f"{base_url}/api/organisationUnits"
+        identifier.value = org_unit.get("code")
+
+        resource.identifier.append(identifier)
 
     resource.name = org_unit.get("name")
     resource.type = []

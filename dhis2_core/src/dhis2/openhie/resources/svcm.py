@@ -20,6 +20,13 @@ def build_svcm_codesystem(code_list: CodeList, base_url: str) -> CodeSystem:
     resource.identifier[0].system = f"{base_url}/api/{code_list.type}"
     resource.identifier[0].value = code_list.id
 
+    if code_list.code:
+        identifier = Identifier()
+        identifier.system = f"{base_url}/api/{code_list.type}"
+        identifier.value = code_list.code
+
+        resource.identifier.append(identifier)
+
     resource.publisher = base_url
     resource.status = "active"
     resource.content = "complete"
@@ -49,6 +56,13 @@ def build_svcm_valueset(code_list: CodeList, base_url: str) -> ValueSet:
     resource.identifier = [Identifier()]
     resource.identifier[0].system = f"{base_url}/api/{code_list.type}"
     resource.identifier[0].value = code_list.id
+
+    if code_list.code:
+        identifier = Identifier()
+        identifier.system = f"{base_url}/api/{code_list.type}"
+        identifier.value = code_list.code
+
+        resource.identifier.append(identifier)
 
     resource.status = "active"
     resource.version = str(code_list.version)
