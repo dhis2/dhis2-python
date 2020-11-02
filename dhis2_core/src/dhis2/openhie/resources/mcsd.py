@@ -16,6 +16,14 @@ from fhir.resources.organization import Organization
 log = logging.getLogger(__name__)
 
 
+def is_facility(org_unit):
+    if geometry := org_unit.get("geometry"):
+        if "Point" == geometry.get("type"):
+            return True
+
+    return False
+
+
 def build_mcsd_location(org_unit, base_url) -> Location:
     id = org_unit.get("id")
 
@@ -75,8 +83,10 @@ def build_mcsd_organization(org_unit, base_url) -> Organization:
     resource.meta = Meta()
     resource.meta.profile = [
         "http://ihe.net/fhir/StructureDefinition/IHE_mCSD_Organization",
-        "http://ihe.net/fhir/StructureDefinition/IHE_mCSD_FacilityOrganization",
     ]
+
+    if is_facility(org_unit):
+        resource.meta.profile.append("http://ihe.net/fhir/StructureDefinition/IHE_mCSD_FacilityOrganization")
 
     resource.identifier = [Identifier()]
     resource.identifier[0].system = f"{base_url}/api/organisationUnits"
@@ -92,12 +102,13 @@ def build_mcsd_organization(org_unit, base_url) -> Organization:
 
     resource.type.append(c1)
 
-    c2 = CodeableConcept()
-    c2.coding = [Coding()]
-    c2.coding[0].system = "urn:ietf:rfc:3986"
-    c2.coding[0].code = "urn:ihe:iti:mcsd:2019:facility"
+    if is_facility(org_unit):
+        c2 = CodeableConcept()
+        c2.coding = [Coding()]
+        c2.coding[0].system = "urn:ietf:rfc:3986"
+        c2.coding[0].code = "urn:ihe:iti:mcsd:2019:facility"
 
-    resource.type.append(c2)
+        resource.type.append(c2)
 
     return resource
 

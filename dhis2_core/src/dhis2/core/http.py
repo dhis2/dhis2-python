@@ -33,6 +33,8 @@ class BaseHttpRequest:
         auth = self._get_auth()
         params = self._get_params(params)
 
+        log.info(f"Starting GET request '{url}' with params='{params}'")
+
         response = requests.get(
             url=url,
             headers=headers,
@@ -68,6 +70,11 @@ class BaseHttpRequest:
 
         if not isinstance(data, str):
             data = json.dumps(data)
+
+        if log.isEnabledFor(logging.DEBUG):
+            log.info(f"Starting POST request '{url}' with params='{params}' and data={data}")
+        else:
+            log.info(f"Starting POST request '{url} with params={params}'")
 
         response = requests.post(
             url=url,

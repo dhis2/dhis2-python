@@ -58,18 +58,19 @@ def get_target(config: MCSDConfig, inventory: Inventory) -> Callable[[Any], Any]
 
         log.info("Creating 'log://' target")
 
-        def fn(data: Any):
+        def target_log(data: Any):
+            log.info("Writing result to stdout")
             print(json.dumps(data[1].as_json(), indent=2))
 
-        return fn
+        return target_log
     elif "null://" == id:
 
         log.info("Creating 'null://' target")
 
-        def fn(data: Any):
-            pass
+        def target_null(data: Any):
+            log.info("Doing nothing with result")
 
-        return fn
+        return target_null
 
     host = resolve_one(id, inventory)
 
@@ -79,11 +80,11 @@ def get_target(config: MCSDConfig, inventory: Inventory) -> Callable[[Any], Any]
 
     log.info(f"Creating target from '{host.key}' with base url '{host.baseUrl}'")
 
-    def fn(data: Any):
+    def target_push(data: Any):
         payload: Bundle = data[1]
         return BaseHttpRequest(host).post("baseR4", data=payload.as_json())
 
-    return fn
+    return target_push
 
 
 def transform(config: MCSDConfig, data: Any):
@@ -106,5 +107,7 @@ def run(config: MCSDConfig, inventory: Inventory):
     data = transform(config, data)
     data = target(data)
 
-    log.info(f"Got response from target system {data}")
+    if data:
+        log.info(f"Got response from target system {data}")
+
     log.info(f"mCSD job '{config.id}'' finished")
