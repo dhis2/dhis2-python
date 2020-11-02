@@ -1,6 +1,48 @@
+[tool.poetry]
+name = "dhis2"
+version = "0.2.0"
+description = "Tool for working and integrating with dhis2 instances"
+authors = ["Morten Hansen <morten@dhis2.org>"]
+license = "BSD-3-Clause"
+classifiers = [
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+]
+readme = "README.md"
+repository = "https://github.com/dhis2/dhis2-python"
+packages = [
+    { include = "dhis2", from = "src" },
+]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/dhis2/dhis2-python/issues"
+Source = "https://github.com/dhis2/dhis2-python"
+
+[tool.poetry.scripts]
+dhis2 = "dhis2.__main__:main"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+PyYAML = "^5.3.1"
+requests = "^2.24.0"
+pydantic = "^1.7.2"
+click = "^7.1.2"
+"fhir.resources" = "^5.1.1"
+
+[tool.poetry.dev-dependencies]
+black = "^20.8b1"
+flake8 = "^3.8.4"
+pytest = "^6.1.2"
+pytest-mock = "^3.3.1"
+flake8-black = "^0.2.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 include = '\.pyi?$'
 include_trailing_comma = true
 line-length = 120
-target-version = ['py38']
+target-version = ["py38"]
