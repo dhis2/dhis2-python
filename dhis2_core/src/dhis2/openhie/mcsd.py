@@ -2,26 +2,19 @@ import json
 import logging
 import sys
 from typing import Any, Callable, Dict
-from uuid import uuid4
 
 from dhis2.core.http import BaseHttpRequest
 from dhis2.core.inventory import HostResolved, Inventory, resolve_one
-from dhis2.openhie.resources.mcsd import build_bundle
 from fhir.resources.bundle import Bundle
-from pydantic import BaseModel, Field
+
+from .models import MCSDConfig
+from .resources.mcsd import build_bundle
 
 log = logging.getLogger(__name__)
 
 
-class MCSDConfig(BaseModel):
-    id: str = Field(default_factory=lambda: str(uuid4()))
-    source: Dict[str, Any] = dict()
-    target: Dict[str, Any] = dict()
-
-
 def get_source(config: MCSDConfig, inventory: Inventory) -> Callable[[Any], Any]:
-    id = config.source["id"]
-    host = resolve_one(id, inventory)
+    host = resolve_one(config.source.id, inventory)
 
     if "dhis2" not in host.type:
         log.error("Only 'dhis2' source type is currently supported")
@@ -30,7 +23,6 @@ def get_source(config: MCSDConfig, inventory: Inventory) -> Callable[[Any], Any]
     log.info(f"Creating source from '{host.key}' with base url '{host.baseUrl}'")
 
     def call():
-        source_filters = config.source.get("filters", [])
         req = BaseHttpRequest(host)
 
         data = req.get(
@@ -38,7 +30,7 @@ def get_source(config: MCSDConfig, inventory: Inventory) -> Callable[[Any], Any]
             params={
                 "fields": "id,code,name,geometry,parent[id]",
                 "rootJunction": "OR",
-                "filter": list(map(lambda x: f"id:eq:{x}", source_filters)),
+                "filter": list(map(lambda x: f"id:eq:{x}", config.source.filters)),
                 "paging": False,
             },
         )
@@ -52,7 +44,7 @@ def get_source(config: MCSDConfig, inventory: Inventory) -> Callable[[Any], Any]
 
 
 def get_target(config: MCSDConfig, inventory: Inventory) -> Callable[[Any], Any]:
-    id = config.target["id"]
+    id = config.target.id
 
     if "log://" == id:
 

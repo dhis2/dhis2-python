@@ -1,27 +1,20 @@
 import json
 import logging
 import sys
-from typing import Any, Callable, Dict
-from uuid import uuid4
+from typing import Any, Callable, Dict, List
 
 from dhis2.core.http import BaseHttpRequest
 from dhis2.core.inventory import HostResolved, Inventory, resolve_one
-from dhis2.openhie.resources.svcm import build_bundle
 from fhir.resources.bundle import Bundle
-from pydantic import BaseModel, Field
+
+from .models import CodeList, SVCMConfig
+from .resources.svcm import build_bundle
 
 log = logging.getLogger(__name__)
 
 
-class SVCMConfig(BaseModel):
-    id: str = Field(default_factory=lambda: str(uuid4()))
-    source: Dict[str, Any] = dict()
-    target: Dict[str, Any] = dict()
-
-
 def get_source(config: SVCMConfig, inventory: Inventory) -> Callable[[Any], Any]:
-    id = config.source["id"]
-    host = resolve_one(id, inventory)
+    host = resolve_one(config.source.id, inventory)
 
     if "dhis2" not in host.type:
         log.error("Only 'dhis2' source type is currently supported")
@@ -30,17 +23,30 @@ def get_source(config: SVCMConfig, inventory: Inventory) -> Callable[[Any], Any]
     log.info(f"Creating source from '{host.key}' with base url '{host.baseUrl}'")
 
     def fn():
-        source_filters = config.source.get("filters", [])
-
-        data = BaseHttpRequest(host).get(
+        option_sets = BaseHttpRequest(host).get(
             "api/optionSets",
             params={
                 "fields": "id,code,version,name,options[id,name,code]",
                 "rootJunction": "OR",
-                "filter": list(map(lambda x: f"id:eq:{x}", source_filters)),
+                "filter": list(map(lambda x: f"id:eq:{x}", config.source.filters.optionSets)),
                 "paging": False,
             },
         )
+
+        categories = BaseHttpRequest(host).get(
+            "api/categories",
+            params={
+                "fields": "id,code,name,categoryOptions::rename(options)[id,name,code]",
+                "rootJunction": "OR",
+                "filter": list(map(lambda x: f"id:eq:{x}", config.source.filters.categories)),
+                "paging": False,
+            },
+        )
+
+        data = {
+            "optionSets": option_sets.get("optionSets", []),
+            "categories": categories.get("categories", []),
+        }
 
         return (
             host,
@@ -51,7 +57,7 @@ def get_source(config: SVCMConfig, inventory: Inventory) -> Callable[[Any], Any]
 
 
 def get_target(config: SVCMConfig, inventory: Inventory) -> Callable[[Any], Any]:
-    id = config.target["id"]
+    id = config.target.id
 
     if "log://" == id:
 
@@ -90,9 +96,20 @@ def transform(config: SVCMConfig, data: Any):
     host: HostResolved = data[0]
     payload: Dict[str, Any] = data[1]
 
+    code_lists: List[CodeList] = []
+
+    option_sets = payload.get("optionSets", [])
+    categories = payload.get("categories", [])
+
+    for option_set in option_sets:
+        code_lists.append(CodeList(**option_set))
+
+    for category in categories:
+        code_lists.append(CodeList(**category, type="categories"))
+
     return (
         host,
-        build_bundle(payload.get("optionSets", []), host.baseUrl),
+        build_bundle(code_lists, host.baseUrl),
     )
 
 
