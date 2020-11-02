@@ -7,7 +7,7 @@ from yaml import load as load
 
 from .http import BaseHttpRequest
 from .inventory import HostResolved
-from .models.schema import Schema, Schemas
+from .metadata.models import Schema, Schemas
 
 try:
     from yaml import CLoader as Loader

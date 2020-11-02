@@ -2,8 +2,7 @@ import logging
 import sys
 from typing import Any, Dict, List
 
-from dhis2.core.models.property import Property
-from dhis2.core.models.schema import Schema
+from dhis2.core.metadata.models import Property, Schema
 
 log = logging.getLogger(__name__)
 
