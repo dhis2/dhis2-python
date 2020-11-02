@@ -17,7 +17,7 @@ from fhir.resources.organization import Organization
 log = logging.getLogger(__name__)
 
 
-def is_facility(org_unit: OrgUnit):
+def is_facility(org_unit: OrgUnit) -> bool:
     if geometry := org_unit.geometry:
         if "Point" == geometry.type:
             return True
@@ -125,7 +125,7 @@ def build_mcsd_organization(org_unit: OrgUnit, base_url) -> Organization:
     return resource
 
 
-def build_location_bundle_entry(org_unit: OrgUnit, base_url):
+def build_location_bundle_entry(org_unit: OrgUnit, base_url: str) -> BundleEntry:
     entry = BundleEntry()
 
     entry.request = BundleEntryRequest()
@@ -137,7 +137,7 @@ def build_location_bundle_entry(org_unit: OrgUnit, base_url):
     return entry
 
 
-def build_organization_bundle_entry(org_unit: OrgUnit, base_url):
+def build_organization_bundle_entry(org_unit: OrgUnit, base_url: str) -> BundleEntry:
     entry = BundleEntry()
 
     entry.request = BundleEntryRequest()
@@ -149,7 +149,7 @@ def build_organization_bundle_entry(org_unit: OrgUnit, base_url):
     return entry
 
 
-def build_bundle(org_units: List[OrgUnit], base_url):
+def build_bundle(org_units: List[OrgUnit], base_url: str) -> Bundle:
     bundle = Bundle()
     bundle.type = "transaction"
     bundle.entry = []
