@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Any, List, Literal, Optional, Union
 from uuid import uuid4
 
@@ -7,6 +8,7 @@ from pydantic import BaseModel, Field
 
 class BaseSource(BaseModel):
     id: str
+    lastUpdated: Optional[date]
 
 
 class BaseTarget(BaseModel):
