@@ -70,16 +70,21 @@ class Inventory(BaseModel):
 
         return hosts
 
-    def get_one_by_id(self, id):
+    def get_one_by_id(self, id) -> Host:
         hosts = self.get_many_by_id(id)
 
-        if not hosts or len(hosts) > 1:
-            print(f"got {len(hosts)} results for host id")
+        if not hosts:
+            log.info("Zero hosts found for id '{id}', expected one result")
+            sys.exit(-1)
+
+        if len(hosts) > 1:
+            log.info("Many hosts found for id '{id}', expected one result")
+            sys.exit(-1)
 
         return hosts[0]
 
 
-def _process_inventory_data(inventory: Dict[str, Any]):
+def _process_inventory_data(inventory: Dict[str, Any]) -> None:
     # since pydantic validation hasn't been run yet, do some basic checks here
     if "hosts" not in inventory or not isinstance(inventory["hosts"], dict):
         return  # return and let pydantic handle the error
@@ -124,7 +129,7 @@ def parse_obj(data: Dict[str, Any]) -> Inventory:
     return data
 
 
-def normalize(id: str):
+def normalize(id: str) -> str:
     if "://" not in id:
         id = f"http://{id}"
 
@@ -176,7 +181,7 @@ def resolve(id: str, inventory: Inventory) -> List[HostResolved]:
     return host_resolved
 
 
-def resolve_one(id: str, inventory: Inventory):
+def resolve_one(id: str, inventory: Inventory) -> HostResolved:
     hosts = resolve(id, inventory)
 
     if not hosts or len(hosts) > 1:
