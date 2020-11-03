@@ -7,7 +7,7 @@ class DatabaseInfo(BaseModel):
     user: str
     url: str
     databaseVersion: str
-    spatialSupport: str
+    spatialSupport: bool
 
 
 class SystemInfo(BaseModel):
