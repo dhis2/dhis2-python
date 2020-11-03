@@ -1,8 +1,9 @@
 import logging
 from typing import List
 
-from .inventory import HostResolved
 from .http import BaseHttpRequest
+from .inventory import HostResolved
+from .metadata.models.system_info import SystemInfo
 
 log = logging.getLogger(__name__)
 
@@ -14,14 +15,9 @@ def inspect_host(host: HostResolved):
     if not data:
         return
 
-    d = {
-        "contextPath": data["contextPath"],
-        "serverDate": data["serverDate"],
-        "version": data["version"],
-        "revision": data["revision"],
-    }
+    info = SystemInfo(**data)
 
-    print(d)
+    log.info(info)
 
 
 def inspect(hosts: List[HostResolved] = []):
