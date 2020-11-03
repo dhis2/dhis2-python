@@ -1,4 +1,3 @@
-from datetime import time, timedelta
 import json
 import logging
 import sys
@@ -8,7 +7,7 @@ from dhis2.core.http import BaseHttpRequest
 from dhis2.core.inventory import HostResolved, Inventory, resolve_one
 from fhir.resources.bundle import Bundle
 
-from .models import OrgUnit, MCSDConfig
+from .models import MCSDConfig, OrgUnit
 from .resources.mcsd import build_bundle
 
 log = logging.getLogger(__name__)
