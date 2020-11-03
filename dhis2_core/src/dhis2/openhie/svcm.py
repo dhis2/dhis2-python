@@ -23,22 +23,34 @@ def get_source(config: SVCMConfig, inventory: Inventory) -> Callable[[Any], Any]
     log.info(f"Creating source from '{host.key}' with base url '{host.baseUrl}'")
 
     def fn():
+        filters = []
+
+        # https://docs.dhis2.org/2.35/en/developer/html/webapi_metadata_object_filter.html
+        if config.source.lastUpdated:
+            filters.append(f"lastUpdated:ge:{config.source.lastUpdated}")
+
+        option_sets_filter = list(map(lambda x: f"id:eq:{x}", config.source.filters.optionSets))
+        option_sets_filter.extend(filters)
+
         option_sets = BaseHttpRequest(host).get(
             "api/optionSets",
             params={
                 "fields": "id,code,name,version,translations,options[id,code,name,translations]",
                 "rootJunction": "OR",
-                "filter": list(map(lambda x: f"id:eq:{x}", config.source.filters.optionSets)),
+                "filter": option_sets_filter,
                 "paging": False,
             },
         )
+
+        categories_filter = list(map(lambda x: f"id:eq:{x}", config.source.filters.categories))
+        categories_filter.extend(filters)
 
         categories = BaseHttpRequest(host).get(
             "api/categories",
             params={
                 "fields": "id,code,name,translations,categoryOptions::rename(options)[id,code,name,translations]",
                 "rootJunction": "OR",
-                "filter": list(map(lambda x: f"id:eq:{x}", config.source.filters.categories)),
+                "filter": categories_filter,
                 "paging": False,
             },
         )

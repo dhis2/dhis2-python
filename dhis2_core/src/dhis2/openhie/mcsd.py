@@ -24,13 +24,18 @@ def get_source(config: MCSDConfig, inventory: Inventory) -> Callable[[Any], Any]
 
     def call():
         req = BaseHttpRequest(host)
+        filter = list(map(lambda x: f"id:eq:{x}", config.source.filters))
+
+        # https://docs.dhis2.org/2.35/en/developer/html/webapi_metadata_object_filter.html
+        if config.source.lastUpdated:
+            filter.append(f"lastUpdated:ge:{config.source.lastUpdated}")
 
         data = req.get(
             "api/organisationUnits",
             params={
                 "fields": "id,code,name,translations,geometry,parent[id,code]",
                 "rootJunction": "OR",
-                "filter": list(map(lambda x: f"id:eq:{x}", config.source.filters)),
+                "filter": filter,
                 "paging": False,
             },
         )

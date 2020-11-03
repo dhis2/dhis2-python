@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dhis2"
-version = "0.2.1"
+version = "0.3.0"
 description = "Tool for working and integrating with dhis2 instances"
 authors = ["Morten Hansen <morten@dhis2.org>"]
 license = "BSD-3-Clause"
