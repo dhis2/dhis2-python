@@ -15,8 +15,9 @@ def cli_openhie():
 
 @cli_openhie.command("mcsd")
 @click.argument("config")
+@click.option("--last-updated")
 @click.pass_obj
-def cmd_openhie_mcsd(ctx, config: str):
+def cmd_openhie_mcsd(ctx, config: str, last_updated: str):
     """ Mobile Care Services Discovery (mCSD) """
     mcsd_config = {
         "source": {},
@@ -32,13 +33,18 @@ def cmd_openhie_mcsd(ctx, config: str):
         return
 
     mcsd_config.update(config_dict)
+
+    if last_updated:
+        mcsd_config["source"]["lastUpdated"] = last_updated
+
     mcsd.run(mcsd.MCSDConfig(**mcsd_config), ctx.inventory)
 
 
 @cli_openhie.command("svcm")
 @click.argument("config")
+@click.option("--last-updated")
 @click.pass_obj
-def cmd_openhie_svcm(ctx, config: str):
+def cmd_openhie_svcm(ctx, config: str, last_updated: str):
     """ Sharing Valuesets, Codes, and Maps (SVCM) """
     svcm_config = {
         "source": {},
@@ -54,6 +60,10 @@ def cmd_openhie_svcm(ctx, config: str):
         return
 
     svcm_config.update(config_dict)
+
+    if last_updated:
+        svcm_config["source"]["lastUpdated"] = last_updated
+
     svcm.run(svcm.SVCMConfig(**svcm_config), ctx.inventory)
 
 
