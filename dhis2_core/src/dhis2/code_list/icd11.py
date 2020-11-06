@@ -17,7 +17,6 @@ def _icd11_fetch(
     id: str,
 ):
     req = BaseHttpRequest(host)
-
     url = f"icd/release/11/{release_id}/{linearizationname}/{id}"
 
     data = req.get(

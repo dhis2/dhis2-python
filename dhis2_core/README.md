@@ -19,8 +19,10 @@ The tool supports a pluggable architecture, but the core supports:
 * Inspecting dhis2 instances
     * `dhis2 -i inventory.yml inspect host-id/group-id`
 * Extracting mCSD and SVCM compatible payload, and pushing those to a FHIR compliant server
-    * `dhis2 -i inventory.yml openhie mcsd mcsd-config.yml`
-    * `dhis2 -i inventory.yml openhie svcm svcm-config.yml`
+    * `dhis2 -i inventory.yml facility-list mcsd mcsd-config.yml`
+    * `dhis2 -i inventory.yml code-list svcm svcm-config.yml`
+* Extract ICD 11 (MMS) `LinearizationEntities` as DHIS2 Option Sets
+  * `dhis2 -i inventory.yml code-list icd11 <icd11-host> --root-id <X>`
 
 (see description of formats below)
 
