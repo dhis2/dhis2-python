@@ -112,4 +112,4 @@ def run(config: MCSDConfig, inventory: Inventory):
     if data:
         log.info(f"Got response from target system {data}")
 
-    log.info(f"mCSD job '{config.id}'' finished")
+    log.info(f"mCSD job '{config.id}' finished")

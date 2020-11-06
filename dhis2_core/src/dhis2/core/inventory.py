@@ -20,6 +20,7 @@ log = logging.getLogger(__name__)
 class HostType(str, Enum):
     dhis2 = "dhis2"
     fhir = "fhir"
+    icd11 = "icd11"
 
 
 class BasicAuthtype(BaseModel):

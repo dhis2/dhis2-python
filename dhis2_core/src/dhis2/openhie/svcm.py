@@ -138,4 +138,4 @@ def run(config: SVCMConfig, inventory: Inventory):
     if data:
         log.info(f"Got response from target system {data}")
 
-    log.info(f"SVCM job '{config.id}'' finished")
+    log.info(f"SVCM job '{config.id}' finished")
