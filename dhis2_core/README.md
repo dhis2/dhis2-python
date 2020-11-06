@@ -21,7 +21,7 @@ The tool supports a pluggable architecture, but the core supports:
 * Extracting mCSD and SVCM compatible payload, and pushing those to a FHIR compliant server
     * `dhis2 -i inventory.yml facility-list mcsd mcsd-config.yml`
     * `dhis2 -i inventory.yml code-list svcm svcm-config.yml`
-* Extract ICD 11 (MMS) `LinearizationEntities` as DHIS2 Option Sets
+* Extract ICD 11 (MMS) `LinearizationEntities` as DHIS2 Option Sets **experimental**
   * `dhis2 -i inventory.yml code-list icd11 <icd11-host> --root-id <X>`
 
 (see description of formats below)

@@ -33,7 +33,7 @@ def cmd_code_list_icd11(
     language: str,
     root_id: str,
 ):
-    """ Generate dhis2 option sets from icd11 source """
+    """ Generate dhis2 option sets from icd11 source **experimental** """
     host = resolve_one(host_id, ctx.inventory)
 
     if not "icd11" == host.type:
