@@ -1,8 +1,9 @@
 import os
 
 import click
+import dhis2.code_list.cli as cli_code_list
+import dhis2.facility_list.cli as cli_facility_list
 import dhis2.generate.cli as cli_generator
-import dhis2.openhie.cli as cli_openhie
 from pkg_resources import iter_entry_points
 
 from .inspect import inspect
@@ -23,10 +24,11 @@ class CliContext(object):
 
 @click.group()
 @click.version_option()
-@click.option("-i", "--inventory")
+@click.option("-i", "--inventory", metavar="INVENTORY")
 @click.option("-d", "--debug", is_flag=True)
 @click.pass_context
 def cli(ctx, inventory, debug):
+    """ DHIS2 Tool for helping with import/export of various formats. """
     ctx.obj = CliContext(inventory, debug)
 
 
@@ -34,17 +36,20 @@ def cli(ctx, inventory, debug):
 @click.argument("id")
 @click.pass_obj
 def cmd_inspect(ctx, id):
+    """ Display basic dhis2 instance information """
     hosts = resolve(id, ctx.inventory)
     inspect(hosts)
 
 
 @cli.group("inventory")
 def cli_inventory():
+    """ Various commands for working with the inventory format """
     pass
 
 
 @cli_inventory.command("schema")
 def cmd_inventory_schema():
+    """ Generate json schema for the inventory format """
     click.echo(Inventory.schema_json(indent=2))
 
 
@@ -52,13 +57,15 @@ def cmd_inventory_schema():
 @click.argument("id")
 @click.pass_obj
 def cmd_inventory_resolve(ctx, id):
+    """ Resolve and print a inventory dsn """
     hosts = resolve(id, ctx.inventory)
 
     for host in hosts:
-        print(host.json())
+        click.echo(host.json())
 
 
-cli_openhie.register_cli(cli)  # register "openhie" plugin
+cli_code_list.register_cli(cli)  # register "code-list" plugin
+cli_facility_list.register_cli(cli)  # register "facility-list" plugin
 cli_generator.register_cli(cli)  # register "generator" plugin
 
 # register additional plugins

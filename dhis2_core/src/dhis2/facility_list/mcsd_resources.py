@@ -2,7 +2,6 @@ import logging
 from base64 import b64encode
 from typing import List
 
-from dhis2.openhie.models import OrgUnit
 from fhir.resources.attachment import Attachment
 from fhir.resources.bundle import Bundle, BundleEntry, BundleEntryRequest
 from fhir.resources.codeableconcept import CodeableConcept
@@ -13,6 +12,8 @@ from fhir.resources.identifier import Identifier
 from fhir.resources.location import Location, LocationPosition
 from fhir.resources.meta import Meta
 from fhir.resources.organization import Organization
+
+from .models.mcsd import OrgUnit
 
 log = logging.getLogger(__name__)
 

@@ -3,7 +3,8 @@ from typing import List
 
 from dhis2.core.http import BaseHttpRequest
 from dhis2.core.inventory import HostResolved
-from dhis2.generate.models.icd11 import LinearizationEntity
+
+from .models.icd11 import LinearizationEntity
 
 log = logging.getLogger(__name__)
 

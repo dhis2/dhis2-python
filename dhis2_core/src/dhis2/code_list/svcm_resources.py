@@ -6,7 +6,7 @@ from fhir.resources.codesystem import CodeSystem, CodeSystemConcept
 from fhir.resources.identifier import Identifier
 from fhir.resources.valueset import ValueSet, ValueSetCompose, ValueSetComposeInclude
 
-from ..models import CodeList
+from .models.svcm import CodeList
 
 log = logging.getLogger(__name__)
 

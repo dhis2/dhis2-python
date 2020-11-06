@@ -5,7 +5,6 @@ from enum import Enum
 from typing import Dict, Tuple, Union
 
 import requests
-from requests.api import head
 from requests.models import Response  # noqa
 
 from .inventory import HostResolved
@@ -26,8 +25,8 @@ class BaseHttpRequest:
     def get(
         self,
         path,
-        params=None,
-        headers=None,
+        params={},
+        headers={},
     ):
         url = self._get_url(path)
         headers = self._get_headers(headers)
@@ -61,8 +60,8 @@ class BaseHttpRequest:
         self,
         path,
         data,
-        params=None,
-        headers=None,
+        params={},
+        headers={},
     ):
         url = self._get_url(path)
         headers = self._get_headers(headers)
