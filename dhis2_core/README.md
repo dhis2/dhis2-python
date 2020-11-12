@@ -21,8 +21,11 @@ The tool supports a pluggable architecture, but the core supports:
 * Extracting mCSD and SVCM compatible payload, and pushing those to a FHIR compliant server
     * `dhis2 -i inventory.yml facility-list mcsd mcsd-config.yml`
     * `dhis2 -i inventory.yml code-list svcm svcm-config.yml`
-* Extract ICD 11 (MMS) `LinearizationEntities` as DHIS2 Option Sets **experimental**
+* Extract ICD 11 (MMS) `LinearizationEntities` as DHIS2 Option Sets
   * `dhis2 -i inventory.yml code-list icd11 <icd11-host> --root-id <X>`
+* Extract ICD 10 `ICD10Entities` as DHIS2 Option Sets
+  * `dhis2 -i inventory.yml code-list icd10 <icd10-host> --root-id <X>`
+  * Please be aware that the icd11 docker image does _not_ include the icd10 code lists, so you have to use the public instance which requires API keys
 
 (see description of formats below)
 
@@ -54,6 +57,19 @@ hosts:
   fhirdemo:
     type: fhir
     baseUrl: http://localhost:8080
+  icd11local:
+    type: icd11
+    baseUrl: http://localhost:8888
+  icd11official:
+    type: icd11
+    baseUrl: https://id.who.int
+    headers:
+      Authorization: Bearer YOUR_TOKEN
+  icd10official:
+    type: icd10
+    baseUrl: https://id.who.int
+    headers:
+      Authorization: Bearer YOUR_TOKEN
 groups:
   dhis2:
     - playdev
