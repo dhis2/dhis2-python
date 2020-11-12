@@ -124,10 +124,15 @@ class BaseHttpRequest:
 
         headers["X-Requested-With"] = "XMLHttpRequest"
 
+        headers.update(self.host.headers)
+
         return headers
 
     def _get_params(self, params={}) -> Dict[str, str]:
-        return deepcopy(params)
+        params = deepcopy(params)
+        params.update(self.host.params)
+
+        return params
 
     def _get_url(self, path="") -> str:
         return f"{self.host.baseUrl}/{path}"

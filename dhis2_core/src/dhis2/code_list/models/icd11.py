@@ -24,7 +24,7 @@ class LinearizationEntity(BaseModel):
     # block : higher level entity which don't have codes
     # category : An ICD entity that bears a code
 
-    classKind: Literal["block", "category", "chapter"]
+    classKind: Literal["block", "category", "chapter", "window"]
     child: Union[List[str], List["LinearizationEntity"]] = []
     parent: Union[List[str], List["LinearizationEntity"]] = []
     browserUrl: Optional[str]

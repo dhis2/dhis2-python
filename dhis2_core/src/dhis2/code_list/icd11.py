@@ -1,4 +1,5 @@
 import logging
+import sys
 from typing import List
 
 from dhis2.core.http import BaseHttpRequest
@@ -63,6 +64,11 @@ def _icd11_resolve_children(
                         language,
                     )
                 )
+            elif "window" == ch.classKind:
+                pass
+            else:
+                log.error(f"Unhandled classKind `{ch.classKind}`")
+                sys.exit(-1)
 
     return children
 
@@ -81,7 +87,6 @@ def _icd11_fetch_all(
 
 
 def _dhis2_make_option_sets(entity: LinearizationEntity):
-    print(entity)
     options = []
 
     option_set = {

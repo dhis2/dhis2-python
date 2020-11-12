@@ -2,7 +2,7 @@ import json
 import logging
 import sys
 from enum import Enum
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Dict, List, Literal, Mapping, Optional, Union
 from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field, ValidationError
@@ -36,6 +36,8 @@ class NoopAuthtype(BaseModel):
 class Host(BaseModel):
     type: Union[HostType, str] = HostType.dhis2
     baseUrl: str
+    headers: Mapping[str, str] = {}
+    params: Mapping[str, str] = {}
     auth: Optional[Dict[str, Union[NoopAuthtype, BasicAuthtype]]] = {"default": NoopAuthtype()}
 
     class Config:
@@ -46,6 +48,8 @@ class HostResolved(BaseModel):
     type: Union[HostType, str] = HostType.dhis2
     key: str
     baseUrl: str
+    headers: Mapping[str, str] = {}
+    params: Mapping[str, str] = {}
     auth: Union[NoopAuthtype, BasicAuthtype]
 
 
@@ -174,6 +178,8 @@ def resolve(id: str, inventory: Inventory) -> List[HostResolved]:
             type=value.type,
             key=key,
             baseUrl=value.baseUrl,
+            headers=value.headers,
+            params=value.params,
             auth=auth,
         )
 
