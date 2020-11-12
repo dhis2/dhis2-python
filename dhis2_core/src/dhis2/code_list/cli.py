@@ -8,6 +8,7 @@ from dhis2.core.utils import parse_file
 
 from . import svcm
 from .icd11 import fetch_icd11_dhis2_option_sets
+from .icd10 import fetch_icd10_dhis2_option_sets
 
 log = logging.getLogger(__name__)
 
@@ -43,6 +44,37 @@ def cmd_code_list_icd11(
     option_sets = fetch_icd11_dhis2_option_sets(
         host,
         linearizationname=linearizationname,
+        release_id=release_id,
+        language=language,
+        root_id=root_id,
+    )
+
+    if option_sets:
+        click.echo(json.dumps(option_sets, indent=2))
+
+
+@cli_code_list.command("icd10")
+@click.argument("host-id")
+@click.option("--release-id", default="2016")
+@click.option("--language", default="en")
+@click.option("--root-id")
+@click.pass_obj
+def cmd_code_list_icd10(
+    ctx,
+    host_id: str,
+    release_id: str,
+    language: str,
+    root_id: str,
+):
+    """ Generate dhis2 option sets from icd10 source **experimental** """
+    host = resolve_one(host_id, ctx.inventory)
+
+    if not "icd10" == host.type:
+        log.error(f"Invalid source type '{host.type}', only 'icd10' sources are allowed")
+        sys.exit(-1)
+
+    option_sets = fetch_icd10_dhis2_option_sets(
+        host,
         release_id=release_id,
         language=language,
         root_id=root_id,

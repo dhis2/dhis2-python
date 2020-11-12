@@ -5,20 +5,22 @@ from typing import List
 from dhis2.core.http import BaseHttpRequest
 from dhis2.core.inventory import HostResolved
 
-from .models.icd11 import LinearizationEntity
+from .models.icd10 import ICD10Entity
 
 log = logging.getLogger(__name__)
 
 
-def _icd11_fetch(
+def _icd10_fetch(
     host: HostResolved,
-    linearizationname: str,
     release_id: str,
     language: str,
     id: str,
 ):
     req = BaseHttpRequest(host)
-    url = f"icd/release/11/{release_id}/{linearizationname}/{id}"
+    url = f"icd/release/10/{release_id}"
+
+    if id:
+        url = f"icd/release/10/{release_id}/{id}"
 
     data = req.get(
         url,
@@ -28,39 +30,37 @@ def _icd11_fetch(
         },
     )
 
-    return LinearizationEntity(**data)
+    return ICD10Entity(**data)
 
 
-def _icd11_resolve_children(
-    child: List[LinearizationEntity],
+def _icd10_resolve_children(
+    child: List[ICD10Entity],
     host: HostResolved,
-    linearizationname: str,
     release_id: str,
     language: str,
-) -> List[LinearizationEntity]:
-    children: List[LinearizationEntity] = []
+) -> List[ICD10Entity]:
+    children: List[ICD10Entity] = []
 
     for c in child:
         parts = c.split("/")
         id = None
 
-        if 9 == len(parts):
-            id = parts[8]
-        elif 10 == len(parts):
-            id = f"{parts[8]}/{parts[9]}"
+        if 8 == len(parts):
+            id = parts[7]
+        elif 9 == len(parts):
+            id = f"{parts[7]}/{parts[8]}"
 
         if id:
-            ch = _icd11_fetch(host, linearizationname, release_id, language, id)
+            ch = _icd10_fetch(host, release_id, language, id)
 
             if "category" == ch.classKind:
                 children.append(ch)
 
             if ch.child:
                 children.extend(
-                    _icd11_resolve_children(
+                    _icd10_resolve_children(
                         ch.child,
                         host,
-                        linearizationname,
                         release_id,
                         language,
                     )
@@ -69,20 +69,19 @@ def _icd11_resolve_children(
     return children
 
 
-def _icd11_fetch_all(
+def _icd10_fetch_all(
     host: HostResolved,
-    linearizationname: str,
     release_id: str,
     language: str,
     root_id: str,
-) -> LinearizationEntity:
-    root = _icd11_fetch(host, linearizationname, release_id, language, id=root_id)
-    root.child = _icd11_resolve_children(root.child, host, linearizationname, release_id, language)
+) -> ICD10Entity:
+    root = _icd10_fetch(host, release_id, language, id=root_id)
+    root.child = _icd10_resolve_children(root.child, host, release_id, language)
 
     return root
 
 
-def _dhis2_make_option_sets(entity: LinearizationEntity):
+def _dhis2_make_option_sets(entity: ICD10Entity):
     options = []
 
     option_set = {
@@ -109,20 +108,19 @@ def _dhis2_make_option_sets(entity: LinearizationEntity):
     }
 
 
-def fetch_icd11_dhis2_option_sets(
+def fetch_icd10_dhis2_option_sets(
     host: HostResolved,
-    linearizationname: str,
     release_id: str,
     language: str,
     root_id: str,
 ):
-    log.info("ICD11 export job started")
+    log.info("ICD10 export job started")
 
-    icd11 = _icd11_fetch_all(host, linearizationname, release_id, language, root_id)
+    icd10 = _icd10_fetch_all(host, release_id, language, root_id)
 
     log.info("Converting to DHIS2 optionset/options payload")
-    dhis2 = _dhis2_make_option_sets(icd11)
+    dhis2 = _dhis2_make_option_sets(icd10)
 
-    log.info("ICD11 export job finished")
+    log.info("ICD10 export job finished")
 
     return dhis2
