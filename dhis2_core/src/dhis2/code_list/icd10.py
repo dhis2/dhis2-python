@@ -1,5 +1,4 @@
 import logging
-import sys
 from typing import List
 
 from dhis2.core.http import BaseHttpRequest
@@ -53,7 +52,7 @@ def _icd10_resolve_children(
         if id:
             ch = _icd10_fetch(host, release_id, language, id)
 
-            if "category" == ch.classKind:
+            if "category" == ch.classKind or "modifiedcategory" == ch.classKind:
                 children.append(ch)
 
             if ch.child:

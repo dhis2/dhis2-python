@@ -1,5 +1,4 @@
 import logging
-import sys
 from typing import List
 
 from dhis2.core.http import BaseHttpRequest
@@ -18,7 +17,10 @@ def _icd11_fetch(
     id: str,
 ):
     req = BaseHttpRequest(host)
-    url = f"icd/release/11/{release_id}/{linearizationname}/{id}"
+    url = f"icd/release/11/{release_id}/{linearizationname}"
+
+    if id:
+        url = f"icd/release/11/{release_id}/{linearizationname}/{id}"
 
     data = req.get(
         url,

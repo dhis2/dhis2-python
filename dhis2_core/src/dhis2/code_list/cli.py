@@ -24,7 +24,7 @@ def cli_code_list():
 @click.option("--linearizationname", default="mms")
 @click.option("--release-id", default="2020-09")
 @click.option("--language", default="en")
-@click.option("--root-id", required=True)
+@click.option("--root-id")
 @click.pass_obj
 def cmd_code_list_icd11(
     ctx,
