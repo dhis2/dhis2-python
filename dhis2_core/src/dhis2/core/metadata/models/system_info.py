@@ -3,11 +3,11 @@ from pydantic import BaseModel
 
 
 class DatabaseInfo(BaseModel):
-    name: str
-    user: str
-    url: str
-    databaseVersion: str
-    spatialSupport: bool
+    name: Optional[str]
+    user: Optional[str]
+    url: Optional[str]
+    databaseVersion: Optional[str]
+    spatialSupport: Optional[bool]
 
 
 class SystemInfo(BaseModel):
