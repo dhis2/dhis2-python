@@ -4,6 +4,7 @@ import click
 import dhis2.code_list.cli as cli_code_list
 import dhis2.facility_list.cli as cli_facility_list
 import dhis2.generate.cli as cli_generator
+import dhis2.e2b.cli as cli_e2b
 from pkg_resources import iter_entry_points
 
 from .inspect import inspect
@@ -67,6 +68,7 @@ def cmd_inventory_resolve(ctx, id):
 cli_code_list.register_cli(cli)  # register "code-list" plugin
 cli_facility_list.register_cli(cli)  # register "facility-list" plugin
 cli_generator.register_cli(cli)  # register "generator" plugin
+cli_e2b.register_cli(cli)  # register "e2b" plugin
 
 # register additional plugins
 for entry_point in iter_entry_points(group="dhis2.plugin", name=None):

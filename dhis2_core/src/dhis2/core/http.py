@@ -1,5 +1,6 @@
 import json
 import logging
+import sys
 from copy import deepcopy
 from enum import Enum
 from typing import Dict, Tuple, Union
@@ -104,7 +105,7 @@ class BaseHttpRequest:
         else:
             log.error(f"Unhandled status code {response.status_code}={response.text}")
 
-        return None
+        sys.exit(-1)
 
     def _get_auth(self) -> Union[Tuple[str], None]:
         if "http-basic" == self.host.auth.type:

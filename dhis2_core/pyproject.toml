@@ -29,6 +29,7 @@ requests = "^2.24.0"
 pydantic = "^1.7.2"
 click = "^7.1.2"
 "fhir.resources" = "^5.1.1"
+lxml = "^4.6.1"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"
