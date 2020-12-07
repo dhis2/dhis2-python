@@ -12,6 +12,7 @@ from .common import (
     get_data_value,
     get_patient_age,
     get_patient_sex,
+    get_reaction_outcome,
     get_yes_no,
 )
 from .models.e2b import Enrollment, TrackedEntity
@@ -188,7 +189,17 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
 
 
 def build_safetyreport_patient_reactions(root: etree.Element, te: TrackedEntity):
-    pass
+    p = etree.SubElement(root, "reaction")
+    outcome = get_reaction_outcome(te)
+    startdate = get_data_value("vNGUuAZA2C2", te)
+
+    if outcome:
+        p.append(E.reactionoutcome(outcome))
+
+    if startdate:
+        datetime_startdate = datetime.fromisoformat(startdate)
+        p.append(E.reactionstartdateformat("102"))
+        p.append(E.reactionstartdate(date_format_102(datetime_startdate)))
 
 
 def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
@@ -232,6 +243,13 @@ def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment):
 
     if dead:
         date_of_death = get_data_value("Ze34uXcBUxi", te)
+        autopsyyesno = get_data_value("yRrSDiR5v1M", te) == "Autopsy done"
+
+        if autopsyyesno:
+            autopsyyesno = "1"
+        else:
+            autopsyyesno = "2"
+
         datetime_of_death = None
 
         if date_of_death:
@@ -244,6 +262,7 @@ def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment):
                 E.patientdeath(
                     E.patientdeathdateformat("102"),
                     E.patientdeathdate(date_format_102(datetime_of_death)),
+                    E.patientautopsyyesno(autopsyyesno),
                 )
             )
     else:

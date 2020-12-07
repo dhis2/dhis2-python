@@ -58,3 +58,24 @@ def get_patient_sex(te: TrackedEntity) -> str:
         return "0"
 
     return "9"
+
+
+def get_reaction_outcome(te: TrackedEntity):
+    value = get_data_value("yRrSDiR5v1M", te)
+
+    if "Recovered/resolved" == value:
+        return "1"
+    elif "Recovering/resolving" == value:
+        return "2"
+    elif "Not recovered/not resolved" == value:
+        return "3"
+    elif "Recovered/resolved with sequelae" == value:
+        return "4"
+    elif "Died" == value:
+        return "5"
+    elif "Unknown" == value:
+        return "6"
+
+    # Autopsy done
+
+    return value
