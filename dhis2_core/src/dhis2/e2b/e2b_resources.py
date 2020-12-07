@@ -41,6 +41,11 @@ def build_safetyreport_patient_drug(
     time: str,
     batch: str,
     dose: str,
+    diluent_name: str,
+    diluent_batch: str,
+    diluent_expiry: str,
+    diluent_dor: str,
+    diluent_tor: str,
 ):
     dt = datetime.fromisoformat(f"{date}T{time}")
 
@@ -56,6 +61,26 @@ def build_safetyreport_patient_drug(
         drug.append(E.drugstructuredosagenumb(dose))
 
     drug.append(E.drugbatchnumb(batch))
+
+    dilutent = []
+
+    if diluent_name:
+        dilutent.append(f"Dilutent name: {diluent_name}")
+
+    if diluent_batch:
+        dilutent.append(f"Dilutent batch: {diluent_batch}")
+
+    if diluent_expiry:
+        dilutent.append(f"Dilutent expiry: {diluent_expiry}")
+
+    if diluent_dor:
+        dilutent.append(f"Dilutent date of reconstitution: {diluent_dor}")
+
+    if diluent_tor:
+        dilutent.append(f"Dilutent time of reconstitution: {diluent_tor}")
+
+    if dilutent:
+        drug.append(E.drugadditional(", ".join(dilutent)))
 
 
 def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
@@ -80,6 +105,27 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
     vaccine4_batch = get_data_value("BHAfwo6JPDa", te)
     vaccine4_dose = get_data_value("Aya8C25DXHe", te)
 
+    diluent1_name = get_data_value("xk9QvZPMVQF", te)
+    diluent1_batch = get_data_value("FQM2ksIQix8", te)
+    diluent1_expiry = get_data_value("cKx0VCmLrsc", te)
+    diluent1_dor = get_data_value("om7AsREDduc", te)  # Date of reconstitution
+    diluent1_tor = get_data_value("zIKVrYHtdUx", te)  # Time of reconstitution
+    diluent2_name = get_data_value("WN8844HG0zi", te)
+    diluent2_batch = get_data_value("ufWU3WStZgG", te)
+    diluent2_expiry = get_data_value("FcqNLPNUPId", te)
+    diluent2_dor = get_data_value("xXjnT9sjt4F", te)  # Date of reconstitution
+    diluent2_tor = get_data_value("KTHsZhIAGWf", te)  # Time of reconstitution
+    diluent3_name = get_data_value("pLu0luPWikb", te)
+    diluent3_batch = get_data_value("MLP8fi1X7UX", te)
+    diluent3_expiry = get_data_value("MGjnXmtmd7l", te)
+    diluent3_dor = get_data_value("fW6RbpJk4hS", te)  # Date of reconstitution
+    diluent3_tor = get_data_value("gG0FZYpEctJ", te)  # Time of reconstitution
+    diluent4_name = get_data_value("ZTyN8vSf7bc", te)
+    diluent4_batch = get_data_value("MyWtDaOdlyD", te)
+    diluent4_expiry = get_data_value("qhDonTAIjl0", te)
+    diluent4_dor = get_data_value("va0Smpy0LUn", te)  # Date of reconstitution
+    diluent4_tor = get_data_value("EDdd0HsfLcO", te)  # Time of reconstitution
+
     if vaccine1_name:
         build_safetyreport_patient_drug(
             root,
@@ -88,6 +134,11 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
             time=vaccine1_time,
             batch=vaccine1_batch,
             dose=vaccine1_dose,
+            diluent_name=diluent1_name,
+            diluent_batch=diluent1_batch,
+            diluent_expiry=diluent1_expiry,
+            diluent_dor=diluent1_dor,
+            diluent_tor=diluent1_tor,
         )
 
     if vaccine2_name:
@@ -98,6 +149,11 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
             time=vaccine2_time,
             batch=vaccine2_batch,
             dose=vaccine2_dose,
+            diluent_name=diluent2_name,
+            diluent_batch=diluent2_batch,
+            diluent_expiry=diluent2_expiry,
+            diluent_dor=diluent2_dor,
+            diluent_tor=diluent2_tor,
         )
 
     if vaccine3_name:
@@ -108,6 +164,11 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
             time=vaccine3_time,
             batch=vaccine3_batch,
             dose=vaccine3_dose,
+            diluent_name=diluent3_name,
+            diluent_batch=diluent3_batch,
+            diluent_expiry=diluent3_expiry,
+            diluent_dor=diluent3_dor,
+            diluent_tor=diluent3_tor,
         )
 
     if vaccine4_name:
@@ -118,6 +179,11 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
             time=vaccine4_time,
             batch=vaccine4_batch,
             dose=vaccine4_dose,
+            diluent_name=diluent4_name,
+            diluent_batch=diluent4_batch,
+            diluent_expiry=diluent4_expiry,
+            diluent_dor=diluent4_dor,
+            diluent_tor=diluent4_tor,
         )
 
 
