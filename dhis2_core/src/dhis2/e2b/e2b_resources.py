@@ -65,13 +65,13 @@ def build_safetyreport_patient_drug(
     dilutent = []
 
     if diluent_name:
-        dilutent.append(f"Dilutent name: {diluent_name}")
+        dilutent.append(f"Name of diluent: {diluent_name}")
 
     if diluent_batch:
-        dilutent.append(f"Dilutent batch: {diluent_batch}")
+        dilutent.append(f"Dilutent batch/lot number: {diluent_batch}")
 
     if diluent_expiry:
-        dilutent.append(f"Dilutent expiry: {diluent_expiry}")
+        dilutent.append(f"Dilutent expiry date: {diluent_expiry}")
 
     if diluent_dor:
         dilutent.append(f"Dilutent date of reconstitution: {diluent_dor}")
