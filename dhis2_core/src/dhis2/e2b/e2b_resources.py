@@ -193,6 +193,19 @@ def build_safetyreport_patient_reactions(root: etree.Element, te: TrackedEntity)
     outcome = get_reaction_outcome(te)
     startdate = get_data_value("vNGUuAZA2C2", te)
 
+    severe_local_reaction = get_data_value("UNmEidE6M9K", te)
+    severe_above_3_days = get_data_value("We87rvcvd8J", te)
+    severe_beyond_nearest_joint = get_data_value("f8hjxmHOtAB", te)
+    seizures = get_data_value("wCGZpudXuYx", te)
+    seizures_type = get_data_value("Zz4KYO4AsSY", te)
+    abscess = get_data_value("wce39JmsjIK", te)
+    sepsis = get_data_value("tUmgO1Ugv6U", te)
+    encephalopathy = get_data_value("pdpAEuUS1W9", te)
+    toxic_shock_syndrome = get_data_value("Apq4JaueuWR", te)
+    thrombocytopenia = get_data_value("GGLLaieVChK", te)
+    anaphylaxis = get_data_value("MkIgCrCTFyE", te)
+    fever_above_38 = get_data_value("rzhHSqK3lQq", te)
+
     if outcome:
         p.append(E.reactionoutcome(outcome))
 
@@ -200,6 +213,47 @@ def build_safetyreport_patient_reactions(root: etree.Element, te: TrackedEntity)
         datetime_startdate = datetime.fromisoformat(startdate)
         p.append(E.reactionstartdateformat("102"))
         p.append(E.reactionstartdate(date_format_102(datetime_startdate)))
+
+    primarysourcereaction = []
+
+    if severe_local_reaction:
+        primarysourcereaction.append("Severe local reaction")
+
+        if severe_above_3_days:
+            primarysourcereaction.append(">3 days")
+
+        if severe_beyond_nearest_joint:
+            primarysourcereaction.append("Beyond nearest joint")
+
+    if seizures:
+        if seizures_type:
+            primarysourcereaction.append(f"Seizures ({seizures_type})")
+        else:
+            primarysourcereaction.append("Seizures")
+
+    if abscess:
+        primarysourcereaction.append("Abscess")
+
+    if sepsis:
+        primarysourcereaction.append("Sepsis")
+
+    if encephalopathy:
+        primarysourcereaction.append("Encephalopathy")
+
+    if toxic_shock_syndrome:
+        primarysourcereaction.append("Toxic shock syndrome")
+
+    if thrombocytopenia:
+        primarysourcereaction.append("Thrombocytopenia")
+
+    if anaphylaxis:
+        primarysourcereaction.append("Anaphylaxis")
+
+    if fever_above_38:
+        primarysourcereaction.append("Fever (> 38°C)")
+
+    if primarysourcereaction:
+        p.append(E.primarysourcereaction(", ".join(primarysourcereaction)))
 
 
 def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
