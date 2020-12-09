@@ -71,11 +71,9 @@ def get_reaction_outcome(te: TrackedEntity):
         return "3"
     elif "Recovered/resolved with sequelae" == value:
         return "4"
-    elif "Died" == value:
+    elif "Died" == value or "Autopsy done" == value:
         return "5"
     elif "Unknown" == value:
         return "6"
-
-    # Autopsy done
 
     return value
