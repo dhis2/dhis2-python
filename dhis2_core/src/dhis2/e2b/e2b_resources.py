@@ -260,8 +260,11 @@ def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
     p = etree.SubElement(root, "patient")
 
     p.append(E.patientinitial(get_attribute_value("TfdH5KvFmMy", te)))  # should we use name here or not?
-    p.append(E.patientonsetage(get_patient_age(te)))
-    p.append(E.patientonsetageunit("801"))
+
+    patient_age = get_patient_age(te)
+
+    p.append(E.patientonsetageunit(patient_age[0]))
+    p.append(E.patientonsetage(patient_age[1]))
     p.append(E.patientsex(get_patient_sex(te)))
 
     if get_yes_no("VXdRoWQOBxG", te):

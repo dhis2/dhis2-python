@@ -32,12 +32,22 @@ def get_data_value(de: str, te: TrackedEntity, idx: int = 0) -> Union[str, None]
     return None
 
 
-def get_patient_age(te: TrackedEntity) -> str:
+def get_patient_age(te: TrackedEntity):
     value = get_attribute_value("BiTsLcJQ95V", te)
     dt = datetime.fromisoformat(value)
     now = datetime.now()
 
-    return str(now.year - dt.year)
+    year = now.year - dt.year
+
+    if year > 0:
+        return ("801", str(year))
+
+    months = now.month - dt.month
+
+    if months > 0:
+        return ("802", str(months))
+
+    return ("804", str(now.day - dt.day))
 
 
 def get_yes_no(de: str, te: TrackedEntity, idx: int = 0):
