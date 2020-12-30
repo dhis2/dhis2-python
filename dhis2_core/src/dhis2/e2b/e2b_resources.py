@@ -53,15 +53,15 @@ def build_safetyreport_patient_drug(
     drug = etree.SubElement(root, "drug")
     drug.append(E.drugcharacterization("2"))
     drug.append(E.medicinalproduct(name))
-    drug.append(E.drugstartdateformat("204"))
-    drug.append(E.drugstartdate(date_format_204(dt)))
-    drug.append(E.drugenddateformat("204"))
-    drug.append(E.drugenddate(date_format_204(dt)))
+    drug.append(E.drugbatchnumb(batch))
 
     if dose:
         drug.append(E.drugstructuredosagenumb(dose))
 
-    drug.append(E.drugbatchnumb(batch))
+    drug.append(E.drugstartdateformat("204"))
+    drug.append(E.drugstartdate(date_format_204(dt)))
+    drug.append(E.drugenddateformat("204"))
+    drug.append(E.drugenddate(date_format_204(dt)))
 
     dilutent = []
 
@@ -206,14 +206,6 @@ def build_safetyreport_patient_reactions(root: etree.Element, te: TrackedEntity)
     anaphylaxis = get_data_value("MkIgCrCTFyE", te)
     fever_above_38 = get_data_value("rzhHSqK3lQq", te)
 
-    if outcome:
-        p.append(E.reactionoutcome(outcome))
-
-    if startdate:
-        datetime_startdate = datetime.fromisoformat(startdate)
-        p.append(E.reactionstartdateformat("102"))
-        p.append(E.reactionstartdate(date_format_102(datetime_startdate)))
-
     primarysourcereaction = []
 
     if severe_local_reaction:
@@ -255,6 +247,14 @@ def build_safetyreport_patient_reactions(root: etree.Element, te: TrackedEntity)
     if primarysourcereaction:
         p.append(E.primarysourcereaction(", ".join(primarysourcereaction)))
 
+    if startdate:
+        datetime_startdate = datetime.fromisoformat(startdate)
+        p.append(E.reactionstartdateformat("102"))
+        p.append(E.reactionstartdate(date_format_102(datetime_startdate)))
+
+    if outcome:
+        p.append(E.reactionoutcome(outcome))
+
 
 def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
     p = etree.SubElement(root, "patient")
@@ -263,8 +263,8 @@ def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
 
     patient_age = get_patient_age(te)
 
-    p.append(E.patientonsetageunit(patient_age[0]))
     p.append(E.patientonsetage(patient_age[1]))
+    p.append(E.patientonsetageunit(patient_age[0]))
     p.append(E.patientsex(get_patient_sex(te)))
 
     if get_yes_no("VXdRoWQOBxG", te):
@@ -273,28 +273,6 @@ def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
                 E.patientmedicalcomment(get_data_value("AfrWB2ofm7l", te) or ""),
             )
         )
-
-    p.append(
-        E.summary(
-            E.reportercomment(get_data_value("IV9W7YXh939", te)),
-        )
-    )
-
-    build_safetyreport_patient_drugs(p, te)
-    build_safetyreport_patient_reactions(p, te)
-
-
-def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment):
-    sr = etree.SubElement(root, "safetyreport")
-
-    sr.append(E.safetyreportversion("1"))
-    sr.append(E.safetyreportid(str(uuid4())))
-    sr.append(E.primarysourcecountry("REPLACE_ME"))
-    sr.append(E.occurcountry("REPLACE_ME"))
-    sr.append(E.transmissiondateformat("102"))
-    sr.append(E.transmissiondate(date_format_102(datetime.now())))
-    sr.append(E.reporttype("1"))
-    sr.append(E.serious(get_yes_no("fq1c1A3EOX5", te)))
 
     dead = get_yes_no("DOA6ZFMro84", te) == "1"
 
@@ -312,16 +290,41 @@ def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment):
         if date_of_death:
             datetime_of_death = datetime.fromisoformat(date_of_death)
 
-        sr.append(E.seriousnessdeath("1"))
-
         if datetime_of_death:
-            sr.append(
+            p.append(
                 E.patientdeath(
                     E.patientdeathdateformat("102"),
                     E.patientdeathdate(date_format_102(datetime_of_death)),
                     E.patientautopsyyesno(autopsyyesno),
                 )
             )
+
+    build_safetyreport_patient_reactions(p, te)
+    build_safetyreport_patient_drugs(p, te)
+
+    p.append(
+        E.summary(
+            E.reportercomment(get_data_value("IV9W7YXh939", te)),
+        )
+    )
+
+
+def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment):
+    sr = etree.SubElement(root, "safetyreport")
+
+    sr.append(E.safetyreportversion("1"))
+    sr.append(E.safetyreportid(str(uuid4())))
+    sr.append(E.primarysourcecountry("REPLACE_ME"))
+    sr.append(E.occurcountry("REPLACE_ME"))
+    sr.append(E.transmissiondateformat("102"))
+    sr.append(E.transmissiondate(date_format_102(datetime.now())))
+    sr.append(E.reporttype("1"))
+    sr.append(E.serious(get_yes_no("fq1c1A3EOX5", te)))
+
+    dead = get_yes_no("DOA6ZFMro84", te) == "1"
+
+    if dead:
+        sr.append(E.seriousnessdeath("1"))
     else:
         sr.append(E.seriousnessdeath("2"))
 
