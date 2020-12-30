@@ -20,14 +20,14 @@ from .models.e2b import Enrollment, TrackedEntity
 log = logging.getLogger(__name__)
 
 
-def build_messageheader(root: etree.Element):
+def build_messageheader(root: etree.Element, sender_id: str, receiver_id: str):
     mh = E.ichicsrmessageheader(
         E.messagetype("ichicsr"),
         E.messageformatversion("2.1"),
         E.messageformatrelease("2.0"),
         E.messagenumb(str(uuid4())),
-        E.messagesenderidentifier("REPLACE_ME"),
-        E.messagereceiveridentifier("REPLACE_ME"),
+        E.messagesenderidentifier(sender_id),
+        E.messagereceiveridentifier(receiver_id),
         E.messagedateformat("204"),
         E.messagedate(date_format_204(datetime.now())),
     )
@@ -309,13 +309,13 @@ def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
     )
 
 
-def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment):
+def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment, country: str):
     sr = etree.SubElement(root, "safetyreport")
 
     sr.append(E.safetyreportversion("1"))
     sr.append(E.safetyreportid(str(uuid4())))
-    sr.append(E.primarysourcecountry("REPLACE_ME"))
-    sr.append(E.occurcountry("REPLACE_ME"))
+    sr.append(E.primarysourcecountry(country))
+    sr.append(E.occurcountry(country))
     sr.append(E.transmissiondateformat("102"))
     sr.append(E.transmissiondate(date_format_102(datetime.now())))
     sr.append(E.reporttype("1"))
@@ -370,7 +370,7 @@ def print_root(root: etree.Element, pretty_print: bool = True):
         etree.tostring(
             root,
             pretty_print=pretty_print,
-            standalone=True,
+            standalone=False,
             encoding="UTF-8",
             doctype='<!DOCTYPE ichicsr SYSTEM "http://eudravigilance.ema.europa.eu/dtd/icsr21xml.dtd">',
         ).decode()
