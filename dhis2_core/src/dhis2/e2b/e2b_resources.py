@@ -65,20 +65,27 @@ def build_safetyreport_patient_drug(
 
     dilutent = []
 
+    drug.append(etree.Comment("Diluent short name description:"))
+    drug.append(etree.Comment("N = Name of diluent"))
+    drug.append(etree.Comment("B = Dilutent batch/lot number"))
+    drug.append(etree.Comment("EX = Dilutent expiry date"))
+    drug.append(etree.Comment("DD = Dilutent date of reconstitution"))
+    drug.append(etree.Comment("DT = Dilutent time of reconstitution"))
+
     if diluent_name:
-        dilutent.append(f"Name of diluent: {diluent_name}")
+        dilutent.append(f"N: {diluent_name}")
 
     if diluent_batch:
-        dilutent.append(f"Dilutent batch/lot number: {diluent_batch}")
+        dilutent.append(f"B: {diluent_batch}")
 
     if diluent_expiry:
-        dilutent.append(f"Dilutent expiry date: {diluent_expiry}")
+        dilutent.append(f"EX: {diluent_expiry}")
 
     if diluent_dor:
-        dilutent.append(f"Dilutent date of reconstitution: {diluent_dor}")
+        dilutent.append(f"DD: {diluent_dor}")
 
     if diluent_tor:
-        dilutent.append(f"Dilutent time of reconstitution: {diluent_tor}")
+        dilutent.append(f"DT: {diluent_tor}")
 
     if dilutent:
         drug.append(E.drugadditional(", ".join(dilutent)))
