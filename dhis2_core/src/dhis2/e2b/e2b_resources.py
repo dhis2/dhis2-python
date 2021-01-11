@@ -268,10 +268,9 @@ def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
 
     p.append(E.patientinitial(get_attribute_value("TfdH5KvFmMy", te)))  # should we use name here or not?
 
-    patient_age = get_patient_age(te)
+    dob = get_attribute_value("BiTsLcJQ95V", te)
 
-    p.append(E.patientonsetage(patient_age[1]))
-    p.append(E.patientonsetageunit(patient_age[0]))
+    p.append(E.patientbirthdate(dob))
     p.append(E.patientsex(get_patient_sex(te)))
 
     if get_yes_no("VXdRoWQOBxG", te):
@@ -319,8 +318,13 @@ def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
 def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment, country: str):
     sr = etree.SubElement(root, "safetyreport")
 
+    id = get_attribute_value("h5FuguPFF2j", te)
+
+    if country:
+        id = f"{country.upper()}-{id}"
+
     sr.append(E.safetyreportversion("1"))
-    sr.append(E.safetyreportid(str(uuid4())))
+    sr.append(E.safetyreportid(id))
     sr.append(E.primarysourcecountry(country))
     sr.append(E.occurcountry(country))
     sr.append(E.transmissiondateformat("102"))
@@ -346,7 +350,7 @@ def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment, c
     sr.append(E.receiptdate(date_format_102(datetime.now())))
     sr.append(E.additionaldocument("2"))
     sr.append(E.fulfillexpeditecriteria("1"))
-    sr.append(E.authoritynumb(get_attribute_value("h5FuguPFF2j", te)))
+    sr.append(E.authoritynumb(id))
 
     sr.append(
         E.primarysource(
@@ -364,8 +368,8 @@ def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment, c
     sr.append(
         E.receiver(
             E.receivertype("5"),
-            E.receiverorganization("WHO"),
-            E.receivercountrycode("ch"),
+            E.receiverorganization("WHO-UMC"),
+            E.receivercountrycode("se"),
         )
     )
 
