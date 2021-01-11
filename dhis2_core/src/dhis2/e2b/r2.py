@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 from lxml.builder import E
 
@@ -8,10 +9,11 @@ from .models.e2b import TrackedEntity
 log = logging.getLogger(__name__)
 
 
-def run(te: TrackedEntity, *, country: str, sender_id: str, receiver_id: str):
+def run(tracked_entities: List[TrackedEntity], *, country: str, sender_id: str, receiver_id: str):
     root = E.ichicsr(lang="en")
     build_messageheader(root, sender_id, receiver_id)
 
-    build_safetyreport(root, te, te.enrollments[0], country)
+    for te in tracked_entities:
+        build_safetyreport(root, te, te.enrollments[0], country)
 
     print_root(root)
