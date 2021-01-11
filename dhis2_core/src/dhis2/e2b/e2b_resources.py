@@ -51,7 +51,7 @@ def build_safetyreport_patient_drug(
     dt = datetime.fromisoformat(f"{date}T{time}")
 
     drug = etree.SubElement(root, "drug")
-    drug.append(E.drugcharacterization("2"))
+    drug.append(E.drugcharacterization("1"))
     drug.append(E.medicinalproduct(name))
     drug.append(E.drugbatchnumb(batch))
 
