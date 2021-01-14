@@ -203,18 +203,14 @@ def build_safetyreport_patient_reaction(root: etree.Element, te: TrackedEntity, 
 
     if startdate:
         datetime_startdate = datetime.fromisoformat(startdate)
-        p.append(E.reactionstartdateformat("204"))
-        p.append(E.reactionstartdate(date_format_204(datetime_startdate)))
+        p.append(E.reactionstartdateformat("102"))
+        p.append(E.reactionstartdate(date_format_102(datetime_startdate)))
 
     if outcome:
         p.append(E.reactionoutcome(outcome))
 
 
 def build_safetyreport_patient_reactions(root: etree.Element, te: TrackedEntity):
-    # p = etree.SubElement(root, "reaction")
-    # outcome = get_reaction_outcome(te)
-    # startdate = get_data_value("vNGUuAZA2C2", te)
-
     severe_local_reaction = get_data_value("UNmEidE6M9K", te)
     severe_above_3_days = get_data_value("We87rvcvd8J", te)
     severe_beyond_nearest_joint = get_data_value("f8hjxmHOtAB", te)
