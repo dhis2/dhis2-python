@@ -10,7 +10,6 @@ from .common import (
     date_format_204,
     get_attribute_value,
     get_data_value,
-    get_patient_age,
     get_patient_sex,
     get_reaction_outcome,
     get_yes_no,
@@ -58,10 +57,10 @@ def build_safetyreport_patient_drug(
     if dose:
         drug.append(E.drugstructuredosagenumb(dose))
 
-    drug.append(E.drugstartdateformat("204"))
-    drug.append(E.drugstartdate(date_format_204(dt)))
-    drug.append(E.drugenddateformat("204"))
-    drug.append(E.drugenddate(date_format_204(dt)))
+    drug.append(E.drugstartdateformat("102"))
+    drug.append(E.drugstartdate(date_format_102(dt)))
+    drug.append(E.drugenddateformat("102"))
+    drug.append(E.drugenddate(date_format_102(dt)))
 
     dilutent = []
 
@@ -69,8 +68,8 @@ def build_safetyreport_patient_drug(
     drug.append(etree.Comment("N = Name of diluent"))
     drug.append(etree.Comment("B = Dilutent batch/lot number"))
     drug.append(etree.Comment("EX = Dilutent expiry date"))
-    drug.append(etree.Comment("DD = Dilutent date of reconstitution"))
-    drug.append(etree.Comment("DT = Dilutent time of reconstitution"))
+    drug.append(etree.Comment("DR = Dilutent date of reconstitution"))
+    drug.append(etree.Comment("TR = Dilutent time of reconstitution"))
 
     if diluent_name:
         dilutent.append(f"N: {diluent_name}")
@@ -82,10 +81,10 @@ def build_safetyreport_patient_drug(
         dilutent.append(f"EX: {diluent_expiry}")
 
     if diluent_dor:
-        dilutent.append(f"DD: {diluent_dor}")
+        dilutent.append(f"DR: {diluent_dor}")
 
     if diluent_tor:
-        dilutent.append(f"DT: {diluent_tor}")
+        dilutent.append(f"TR: {diluent_tor}")
 
     if dilutent:
         drug.append(E.drugadditional(", ".join(dilutent)))
@@ -195,10 +194,26 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
         )
 
 
-def build_safetyreport_patient_reactions(root: etree.Element, te: TrackedEntity):
+def build_safetyreport_patient_reaction(root: etree.Element, te: TrackedEntity, reaction: str):
     p = etree.SubElement(root, "reaction")
     outcome = get_reaction_outcome(te)
     startdate = get_data_value("vNGUuAZA2C2", te)
+
+    p.append(E.primarysourcereaction(reaction))
+
+    if startdate:
+        datetime_startdate = datetime.fromisoformat(startdate)
+        p.append(E.reactionstartdateformat("204"))
+        p.append(E.reactionstartdate(date_format_204(datetime_startdate)))
+
+    if outcome:
+        p.append(E.reactionoutcome(outcome))
+
+
+def build_safetyreport_patient_reactions(root: etree.Element, te: TrackedEntity):
+    # p = etree.SubElement(root, "reaction")
+    # outcome = get_reaction_outcome(te)
+    # startdate = get_data_value("vNGUuAZA2C2", te)
 
     severe_local_reaction = get_data_value("UNmEidE6M9K", te)
     severe_above_3_days = get_data_value("We87rvcvd8J", te)
@@ -213,54 +228,43 @@ def build_safetyreport_patient_reactions(root: etree.Element, te: TrackedEntity)
     anaphylaxis = get_data_value("MkIgCrCTFyE", te)
     fever_above_38 = get_data_value("rzhHSqK3lQq", te)
 
-    primarysourcereaction = []
-
     if severe_local_reaction:
-        primarysourcereaction.append("Severe local reaction")
+        reaction = "Severe local reaction"
 
         if severe_above_3_days:
-            primarysourcereaction.append(">3 days")
+            reaction += ", >3 days"
 
         if severe_beyond_nearest_joint:
-            primarysourcereaction.append("Beyond nearest joint")
+            reaction += ", Beyond nearest joint"
+
+        build_safetyreport_patient_reaction(root, te, reaction)
 
     if seizures:
         if seizures_type:
-            primarysourcereaction.append(f"Seizures ({seizures_type})")
+            build_safetyreport_patient_reaction(root, te, f"Seizures ({seizures_type})")
         else:
-            primarysourcereaction.append("Seizures")
+            build_safetyreport_patient_reaction(root, te, "Seizures")
 
     if abscess:
-        primarysourcereaction.append("Abscess")
+        build_safetyreport_patient_reaction(root, te, "Abscess")
 
     if sepsis:
-        primarysourcereaction.append("Sepsis")
+        build_safetyreport_patient_reaction(root, te, "Sepsis")
 
     if encephalopathy:
-        primarysourcereaction.append("Encephalopathy")
+        build_safetyreport_patient_reaction(root, te, "Encephalopathy")
 
     if toxic_shock_syndrome:
-        primarysourcereaction.append("Toxic shock syndrome")
+        build_safetyreport_patient_reaction(root, te, "Toxic shock syndrome")
 
     if thrombocytopenia:
-        primarysourcereaction.append("Thrombocytopenia")
+        build_safetyreport_patient_reaction(root, te, "Thrombocytopenia")
 
     if anaphylaxis:
-        primarysourcereaction.append("Anaphylaxis")
+        build_safetyreport_patient_reaction(root, te, "Anaphylaxis")
 
     if fever_above_38:
-        primarysourcereaction.append("Fever (> 38°C)")
-
-    if primarysourcereaction:
-        p.append(E.primarysourcereaction(", ".join(primarysourcereaction)))
-
-    if startdate:
-        datetime_startdate = datetime.fromisoformat(startdate)
-        p.append(E.reactionstartdateformat("102"))
-        p.append(E.reactionstartdate(date_format_102(datetime_startdate)))
-
-    if outcome:
-        p.append(E.reactionoutcome(outcome))
+        build_safetyreport_patient_reaction(root, te, "Fever (> 38°C)")
 
 
 def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
