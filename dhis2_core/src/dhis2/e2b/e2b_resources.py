@@ -268,8 +268,10 @@ def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
 
     p.append(E.patientinitial(get_attribute_value("TfdH5KvFmMy", te)))  # should we use name here or not?
 
-    dob = get_attribute_value("BiTsLcJQ95V", te)
+    dt = datetime.fromisoformat(get_attribute_value("BiTsLcJQ95V", te))
+    dob = dt.strftime("%Y%m%d")
 
+    p.append(E.patientbirthdateformat("102"))
     p.append(E.patientbirthdate(dob))
     p.append(E.patientsex(get_patient_sex(te)))
 
@@ -321,7 +323,8 @@ def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment, c
     id = get_attribute_value("h5FuguPFF2j", te)
 
     if country:
-        id = f"{country.upper()}-{id}"
+        country = country.upper()
+        id = f"{country}-{id}"
 
     sr.append(E.safetyreportversion("1"))
     sr.append(E.safetyreportid(id))
@@ -350,7 +353,6 @@ def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment, c
     sr.append(E.receiptdate(date_format_102(datetime.now())))
     sr.append(E.additionaldocument("2"))
     sr.append(E.fulfillexpeditecriteria("1"))
-    sr.append(E.authoritynumb(id))
 
     sr.append(
         E.primarysource(
@@ -369,7 +371,7 @@ def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment, c
         E.receiver(
             E.receivertype("5"),
             E.receiverorganization("WHO-UMC"),
-            E.receivercountrycode("se"),
+            E.receivercountrycode("SE"),
         )
     )
 
