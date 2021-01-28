@@ -26,7 +26,8 @@ The tool supports a pluggable architecture, but the core supports:
 * Extract ICD 10 `ICD10Entities` as DHIS2 Option Sets
   * `dhis2 -i inventory.yml code-list icd10 <icd10-host> --root-id <X>`
   * Please be aware that the icd11 docker image does _not_ include the icd10 code lists, so you have to use the public instance which requires API keys
-
+* Extract Individual Case Safety Reports E2B (R2) XML from DHIS2 instances that have installed the WHO AEFI package
+ 
 (see description of formats below)
 
 As of now, we do not support sending data to dhis2, only extraction is supported.
