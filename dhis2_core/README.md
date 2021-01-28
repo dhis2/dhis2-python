@@ -109,3 +109,23 @@ target:
 ```
 
 (this is also the default if no target is given)
+
+### Individual Case Safety Reports E2B (R2) configuration
+
+Extract of E2B R2 compatible XML is now supported in the tool. To use it, you will need a connection to a dhis2 instance with the DHIS2 WHO AEFI program,
+and for now only individual tracked entities can be extracted (more flexible query mechanism is coming)
+
+Basic dhis2 config
+
+```
+hosts:
+  d2aefi:
+    type: dhis2
+    baseUrl: https://dhis2-instance.com
+    username: username
+    password: password
+```
+
+Example command for extracting E2B XML
+
+`dhis2 -i inventory.yml e2b d2aefi --tracked-entity some-te-uid`
