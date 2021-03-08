@@ -100,6 +100,7 @@ def _dhis2_make_option_sets(entity: LinearizationEntity):
         option = {
             "name": c.title.value,
             "code": c.code,
+            "valueType": "TEXT"
         }
 
         option_set["options"].append({"code": c.code})
