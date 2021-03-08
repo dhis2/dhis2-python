@@ -79,7 +79,7 @@ def get_target(config: MCSDConfig, inventory: Inventory) -> Callable[[Any], Any]
 
     def target_push(data: Any):
         payload: Bundle = data[1]
-        return BaseHttpRequest(host).post("baseR4", data=payload.as_json())
+        return BaseHttpRequest(host).post("", data=payload.as_json())
 
     return target_push
 
