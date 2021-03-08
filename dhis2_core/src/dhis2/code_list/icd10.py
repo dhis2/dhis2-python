@@ -85,7 +85,7 @@ def _dhis2_make_option_sets(entity: ICD10Entity):
 
     option_set = {
         "name": entity.title.value,
-        "code": entity.codeRange,
+        "code": entity.codeRange or "icd10",
         "valueType": "TEXT",
         "options": [],
     }
