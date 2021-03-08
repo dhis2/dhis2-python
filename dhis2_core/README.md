@@ -57,7 +57,7 @@ hosts:
         password: district
   fhirdemo:
     type: fhir
-    baseUrl: http://localhost:8080
+    baseUrl: http://localhost:8080/baseR4
   icd11local:
     type: icd11
     baseUrl: http://localhost:8888
