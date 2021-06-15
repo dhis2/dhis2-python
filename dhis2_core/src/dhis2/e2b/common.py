@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Union
 
-from .models.e2b import Enrollment, Event, EventDataValue, TrackedEntity
+from .models.e2b import AttributeValue, Enrollment, Event, EventDataValue, TrackedEntity
 
 
 def date_format_102(dt: datetime) -> str:
@@ -12,24 +12,29 @@ def date_format_204(dt: datetime) -> str:
     return dt.strftime("%Y%m%d%H%M%S")
 
 
-def get_attribute_value(at: str, te: TrackedEntity) -> Union[str, None]:
-    if te.attributes[at]:
-        return te.attributes[at].value
+def get_attribute_value(at: str, te: TrackedEntity, defaultValue = None) -> Union[str, None]:
+    av = te.attributes.get(at, defaultValue)
+
+    if not av:
+        return defaultValue
+
+    if "value" in av:
+        return av.value
 
 
-def get_data_value(de: str, te: TrackedEntity, idx: int = 0) -> Union[str, None]:
+def get_data_value(de: str, te: TrackedEntity, idx: int = 0, defaultValue = None) -> Union[str, None]:
     en: Enrollment = te.enrollments[idx]
     ev: Event = en.events["so8YZ9J3MeO"]  # AEFI stage
 
     if de not in ev.dataValues:
-        return None
+        return defaultValue
 
     dv: EventDataValue = ev.dataValues[de]
 
     if dv:
         return dv.value
 
-    return None
+    return defaultValue
 
 
 def get_patient_age(te: TrackedEntity):

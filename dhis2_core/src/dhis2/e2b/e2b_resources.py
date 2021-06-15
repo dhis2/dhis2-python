@@ -93,22 +93,22 @@ def build_safetyreport_patient_drug(
 def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
     vaccine1_name = get_data_value("uSVcZzSM3zg", te)
     vaccine1_date = get_data_value("dOkuCjpD978", te)
-    vaccine1_time = get_data_value("BSUncNBb20j", te)
+    vaccine1_time = get_data_value("BSUncNBb20j", te, defaultValue="00:00")
     vaccine1_batch = get_data_value("LNqkAlvGplL", te)
     vaccine1_dose = get_data_value("LIyV4t7eCfZ", te)
     vaccine2_name = get_data_value("g9PjywVj2fs", te)
     vaccine2_date = get_data_value("VrzEutEnzSJ", te)
-    vaccine2_time = get_data_value("fZFQVZFqu0q", te)
+    vaccine2_time = get_data_value("fZFQVZFqu0q", te, defaultValue="00:00")
     vaccine2_batch = get_data_value("b1rSwGRcY5W", te)
     vaccine2_dose = get_data_value("E3F414izniN", te)
     vaccine3_name = get_data_value("OU5klvkk3SM", te)
     vaccine3_date = get_data_value("f4WCAVwjHz0", te)
-    vaccine3_time = get_data_value("VQKdZ1KeD7u", te)
+    vaccine3_time = get_data_value("VQKdZ1KeD7u", te, defaultValue="00:00")
     vaccine3_batch = get_data_value("YBnFoNouH6f", te)
     vaccine3_dose = get_data_value("WlE0K4xCc14", te)
     vaccine4_name = get_data_value("menOXwIFZh5", te)
     vaccine4_date = get_data_value("H3TKHMFIN6V", te)
-    vaccine4_time = get_data_value("S1PRFSk8Y9v", te)
+    vaccine4_time = get_data_value("S1PRFSk8Y9v", te, defaultValue="00:00")
     vaccine4_batch = get_data_value("BHAfwo6JPDa", te)
     vaccine4_dose = get_data_value("Aya8C25DXHe", te)
 
@@ -266,13 +266,19 @@ def build_safetyreport_patient_reactions(root: etree.Element, te: TrackedEntity)
 def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
     p = etree.SubElement(root, "patient")
 
-    p.append(E.patientinitial(get_attribute_value("TfdH5KvFmMy", te)))  # should we use name here or not?
+    name = get_attribute_value("TfdH5KvFmMy", te)
 
-    dt = datetime.fromisoformat(get_attribute_value("BiTsLcJQ95V", te))
-    dob = dt.strftime("%Y%m%d")
+    if name:
+        p.append(E.patientinitial(name))  # should we use name here or not?
+
+    dt = get_attribute_value("BiTsLcJQ95V", te)
+
+    if dt:
+        dt = datetime.fromisoformat(dt)
+        dob = dt.strftime("%Y%m%d")
+        p.append(E.patientbirthdate(dob))
 
     p.append(E.patientbirthdateformat("102"))
-    p.append(E.patientbirthdate(dob))
     p.append(E.patientsex(get_patient_sex(te)))
 
     if get_yes_no("VXdRoWQOBxG", te):
