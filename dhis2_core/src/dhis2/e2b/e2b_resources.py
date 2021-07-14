@@ -318,10 +318,9 @@ def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
 
     p.append(
         E.summary(
-            E.reportercomment(get_data_value("IV9W7YXh939", te)),
+            E.reportercomment(get_data_value("IV9W7YXh939", te, 0, "")),
         )
     )
-
 
 def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment, country: str):
     sr = etree.SubElement(root, "safetyreport")
