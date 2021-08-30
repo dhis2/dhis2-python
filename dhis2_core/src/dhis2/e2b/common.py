@@ -22,8 +22,10 @@ def get_attribute_value(at: str, te: TrackedEntity, defaultValue=None) -> Union[
     if not av:
         return defaultValue
 
-    if "value" in av:
+    if av.value:
         return av.value
+
+    return defaultValue
 
 
 def get_data_value(de: str, te: TrackedEntity, idx: int = 0, defaultValue=None) -> Union[str, None]:

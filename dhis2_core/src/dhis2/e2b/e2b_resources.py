@@ -343,7 +343,11 @@ def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment, c
 
     if country:
         country = country.upper()
-        id = f"{country}-{id}"
+
+        if id:
+            id = f"{country}-{id}"
+        else:
+            id = f"{country}"
 
     sr.append(E.safetyreportversion("1"))
     sr.append(E.safetyreportid(id))
