@@ -47,7 +47,10 @@ def build_safetyreport_patient_drug(
     diluent_dor: str,
     diluent_tor: str,
 ):
-    dt = datetime.fromisoformat(f"{date}T{time}")
+    dt = None
+
+    if date:
+        dt = datetime.fromisoformat(f"{date}T{time}")
 
     drug = etree.SubElement(root, "drug")
     drug.append(E.drugcharacterization("1"))
@@ -57,10 +60,11 @@ def build_safetyreport_patient_drug(
     if dose:
         drug.append(E.drugstructuredosagenumb(dose))
 
-    drug.append(E.drugstartdateformat("102"))
-    drug.append(E.drugstartdate(date_format_102(dt)))
-    drug.append(E.drugenddateformat("102"))
-    drug.append(E.drugenddate(date_format_102(dt)))
+    if dt:
+        drug.append(E.drugstartdateformat("102"))
+        drug.append(E.drugstartdate(date_format_102(dt)))
+        drug.append(E.drugenddateformat("102"))
+        drug.append(E.drugenddate(date_format_102(dt)))
 
     dilutent = []
 
@@ -139,7 +143,7 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
             name=vaccine1_name,
             date=vaccine1_date,
             time=vaccine1_time,
-            batch=vaccine1_batch,
+            batch=vaccine1_batch or "",
             dose=vaccine1_dose,
             diluent_name=diluent1_name,
             diluent_batch=diluent1_batch,
@@ -154,7 +158,7 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
             name=vaccine2_name,
             date=vaccine2_date,
             time=vaccine2_time,
-            batch=vaccine2_batch,
+            batch=vaccine2_batch or "",
             dose=vaccine2_dose,
             diluent_name=diluent2_name,
             diluent_batch=diluent2_batch,
@@ -169,7 +173,7 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
             name=vaccine3_name,
             date=vaccine3_date,
             time=vaccine3_time,
-            batch=vaccine3_batch,
+            batch=vaccine3_batch or "",
             dose=vaccine3_dose,
             diluent_name=diluent3_name,
             diluent_batch=diluent3_batch,
@@ -184,7 +188,7 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
             name=vaccine4_name,
             date=vaccine4_date,
             time=vaccine4_time,
-            batch=vaccine4_batch,
+            batch=vaccine4_batch or "",
             dose=vaccine4_dose,
             diluent_name=diluent4_name,
             diluent_batch=diluent4_batch,
@@ -321,6 +325,7 @@ def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
             E.reportercomment(get_data_value("IV9W7YXh939", te, 0, "")),
         )
     )
+
 
 def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment, country: str):
     sr = etree.SubElement(root, "safetyreport")
