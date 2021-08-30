@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Union
 
-from .models.e2b import AttributeValue, Enrollment, Event, EventDataValue, TrackedEntity
+from .models.e2b import Enrollment, Event, EventDataValue, TrackedEntity
 
 
 def date_format_102(dt: datetime) -> str:
@@ -71,7 +71,8 @@ def get_yes_no(de: str, te: TrackedEntity, idx: int = 0):
 
 
 def get_patient_sex(te: TrackedEntity) -> str:
-    value = get_attribute_value("CklPZdOd6H1", te)
+    # value = get_attribute_value("CklPZdOd6H1", te)
+    value = get_attribute_value("oindugucx72", te)
 
     if "MALE" == value:
         return "1"
