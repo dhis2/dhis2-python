@@ -42,17 +42,13 @@ def build_safetyreport_patient_drug(
     time: str,
     batch: str,
     dose: str,
+    expiry: str,
     diluent_name: str,
     diluent_batch: str,
     diluent_expiry: str,
     diluent_dor: str,
     diluent_tor: str,
 ):
-    dt = None
-
-    if date:
-        dt = datetime.fromisoformat(f"{date}T{time}")
-
     drug = etree.SubElement(root, "drug")
     drug.append(E.drugcharacterization("1"))
     drug.append(E.medicinalproduct(name))
@@ -61,11 +57,15 @@ def build_safetyreport_patient_drug(
     if dose:
         drug.append(E.drugstructuredosagenumb(dose))
 
-    if dt:
+    if date:
+        dt = datetime.fromisoformat(f"{date}T{time}")
         drug.append(E.drugstartdateformat("102"))
         drug.append(E.drugstartdate(date_format_102(dt)))
         drug.append(E.drugenddateformat("102"))
         drug.append(E.drugenddate(date_format_102(dt)))
+
+    if expiry:
+        drug.append(E.drugdosagetext(f"Expiry date: {expiry}"))
 
     dilutent = []
 
@@ -101,21 +101,25 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
     vaccine1_time = get_data_value("BSUncNBb20j", te, defaultValue="00:00")
     vaccine1_batch = get_data_value("LNqkAlvGplL", te)
     vaccine1_dose = get_data_value("LIyV4t7eCfZ", te)
+    vaccine1_expiry = get_data_value("VFrc8SNFYm7", te)
     vaccine2_name = get_data_value("g9PjywVj2fs", te)
     vaccine2_date = get_data_value("VrzEutEnzSJ", te)
     vaccine2_time = get_data_value("fZFQVZFqu0q", te, defaultValue="00:00")
     vaccine2_batch = get_data_value("b1rSwGRcY5W", te)
     vaccine2_dose = get_data_value("E3F414izniN", te)
+    vaccine2_expiry = get_data_value("rVUo2PBgwhr", te)
     vaccine3_name = get_data_value("OU5klvkk3SM", te)
     vaccine3_date = get_data_value("f4WCAVwjHz0", te)
     vaccine3_time = get_data_value("VQKdZ1KeD7u", te, defaultValue="00:00")
     vaccine3_batch = get_data_value("YBnFoNouH6f", te)
     vaccine3_dose = get_data_value("WlE0K4xCc14", te)
+    vaccine3_expiry = get_data_value("ffYfdSPmM1W", te)
     vaccine4_name = get_data_value("menOXwIFZh5", te)
     vaccine4_date = get_data_value("H3TKHMFIN6V", te)
     vaccine4_time = get_data_value("S1PRFSk8Y9v", te, defaultValue="00:00")
     vaccine4_batch = get_data_value("BHAfwo6JPDa", te)
     vaccine4_dose = get_data_value("Aya8C25DXHe", te)
+    vaccine4_expiry = get_data_value("ZfjyIKeX1AN", te)
 
     diluent1_name = get_data_value("xk9QvZPMVQF", te)
     diluent1_batch = get_data_value("FQM2ksIQix8", te)
@@ -146,6 +150,7 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
             time=vaccine1_time,
             batch=vaccine1_batch or "",
             dose=vaccine1_dose,
+            expiry=vaccine1_expiry,
             diluent_name=diluent1_name,
             diluent_batch=diluent1_batch,
             diluent_expiry=diluent1_expiry,
@@ -161,6 +166,7 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
             time=vaccine2_time,
             batch=vaccine2_batch or "",
             dose=vaccine2_dose,
+            expiry=vaccine2_expiry,
             diluent_name=diluent2_name,
             diluent_batch=diluent2_batch,
             diluent_expiry=diluent2_expiry,
@@ -176,6 +182,7 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
             time=vaccine3_time,
             batch=vaccine3_batch or "",
             dose=vaccine3_dose,
+            expiry=vaccine3_expiry,
             diluent_name=diluent3_name,
             diluent_batch=diluent3_batch,
             diluent_expiry=diluent3_expiry,
@@ -191,6 +198,7 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
             time=vaccine4_time,
             batch=vaccine4_batch or "",
             dose=vaccine4_dose,
+            expiry=vaccine4_expiry,
             diluent_name=diluent4_name,
             diluent_batch=diluent4_batch,
             diluent_expiry=diluent4_expiry,
