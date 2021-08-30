@@ -12,7 +12,11 @@ def date_format_204(dt: datetime) -> str:
     return dt.strftime("%Y%m%d%H%M%S")
 
 
-def get_attribute_value(at: str, te: TrackedEntity, defaultValue = None) -> Union[str, None]:
+def date_format_203(dt: datetime) -> str:
+    return dt.strftime("%Y%m%d%H%M")
+
+
+def get_attribute_value(at: str, te: TrackedEntity, defaultValue=None) -> Union[str, None]:
     av = te.attributes.get(at, defaultValue)
 
     if not av:
@@ -22,7 +26,7 @@ def get_attribute_value(at: str, te: TrackedEntity, defaultValue = None) -> Unio
         return av.value
 
 
-def get_data_value(de: str, te: TrackedEntity, idx: int = 0, defaultValue = None) -> Union[str, None]:
+def get_data_value(de: str, te: TrackedEntity, idx: int = 0, defaultValue=None) -> Union[str, None]:
     en: Enrollment = te.enrollments[idx]
     ev: Event = en.events["so8YZ9J3MeO"]  # AEFI stage
 
@@ -72,7 +76,7 @@ def get_patient_sex(te: TrackedEntity) -> str:
     elif "FEMALE" == value:
         return "0"
 
-    return "9"
+    return ""
 
 
 def get_reaction_outcome(te: TrackedEntity):

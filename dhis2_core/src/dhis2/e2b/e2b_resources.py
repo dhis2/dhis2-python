@@ -7,6 +7,7 @@ from lxml.builder import E
 
 from .common import (
     date_format_102,
+    date_format_203,
     date_format_204,
     get_attribute_value,
     get_data_value,
@@ -207,8 +208,8 @@ def build_safetyreport_patient_reaction(root: etree.Element, te: TrackedEntity, 
 
     if startdate:
         datetime_startdate = datetime.fromisoformat(startdate)
-        p.append(E.reactionstartdateformat("102"))
-        p.append(E.reactionstartdate(date_format_102(datetime_startdate)))
+        p.append(E.reactionstartdateformat("203"))
+        p.append(E.reactionstartdate(date_format_203(datetime_startdate)))
 
     if outcome:
         p.append(E.reactionoutcome(outcome))
