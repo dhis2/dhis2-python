@@ -71,8 +71,10 @@ def get_yes_no(de: str, te: TrackedEntity, idx: int = 0):
 
 
 def get_patient_sex(te: TrackedEntity) -> str:
-    # value = get_attribute_value("CklPZdOd6H1", te)
-    value = get_attribute_value("oindugucx72", te)
+    value = get_attribute_value("CklPZdOd6H1", te)
+
+    if not value:
+        value = get_attribute_value("oindugucx72", te)
 
     if "MALE" == value:
         return "1"
