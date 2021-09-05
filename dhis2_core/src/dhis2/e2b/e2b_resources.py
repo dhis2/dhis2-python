@@ -336,7 +336,14 @@ def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
     )
 
 
-def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment, country: str):
+def build_safetyreport(
+    root: etree.Element,
+    te: TrackedEntity,
+    en: Enrollment,
+    country: str,
+    receiverorganization: str,
+    receivercountrycode: str,
+):
     sr = etree.SubElement(root, "safetyreport")
 
     id = get_attribute_value("h5FuguPFF2j", te)
@@ -393,8 +400,8 @@ def build_safetyreport(root: etree.Element, te: TrackedEntity, en: Enrollment, c
     sr.append(
         E.receiver(
             E.receivertype("5"),
-            E.receiverorganization("WHO-UMC"),
-            E.receivercountrycode("SE"),
+            E.receiverorganization(receiverorganization),
+            E.receivercountrycode(receivercountrycode),
         )
     )
 

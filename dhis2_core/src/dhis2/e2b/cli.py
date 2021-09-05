@@ -62,18 +62,31 @@ def get_aefi_patient(host: HostResolved, pr: str, te: str) -> TrackedEntity:
 @click.option("--country", default="unknown")
 @click.option("--sender-id", default="unknown")
 @click.option("--receiver-id", default="unknown")
+@click.option("--receiver-organization", default="WHO-UMC")
+@click.option("--receiver-code", default="SE")
 @click.option("--tracked-entity", default="zAt1I8i6c83")
 @click.pass_obj
-def cmd_e2b(ctx, host_id: str, country: str, sender_id: str, receiver_id: str, tracked_entity: str):
+def cmd_e2b(
+    ctx,
+    host_id: str,
+    country: str,
+    sender_id: str,
+    receiver_id: str,
+    receiver_organization: str,
+    receiver_code: str,
+    tracked_entity: str,
+):
     """ Individual Case Safety Reports E2B (R2) """
     host = resolve_one(host_id, ctx.inventory)
     te = get_aefi_patient(host, "EZkN8vYZwjR", tracked_entity)
 
     r2.run(
         [te],
-        country=country,
         sender_id=sender_id,
         receiver_id=receiver_id,
+        country=country,
+        receiverorganization=receiver_organization,
+        receivercountrycode=receiver_code,
     )
 
 
