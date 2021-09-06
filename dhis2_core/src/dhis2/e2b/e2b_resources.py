@@ -55,11 +55,19 @@ def build_safetyreport_patient_drug(
     drug.append(E.medicinalproduct(f"{name} {brand}"))
     drug.append(E.drugbatchnumb(batch))
 
+    drugdosagetext = ""
+
     if dose:
-        drug.append(E.drugstructuredosagenumb(dose))
+        drugdosagetext += f"Dose number {dose}"
 
     if expiry:
-        drug.append(E.drugdosagetext(f"Expiry date: {expiry}"))
+        if drugdosagetext:
+            drugdosagetext += f", Expiry date: {expiry}"
+        else:
+            drugdosagetext += f"Expiry date: {expiry}"
+
+    if drugdosagetext:
+        drug.append(E.drugdosagetext(drugdosagetext))
 
     if date:
         dt = datetime.fromisoformat(f"{date}T{time}")
