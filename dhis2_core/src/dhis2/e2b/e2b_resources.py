@@ -57,15 +57,15 @@ def build_safetyreport_patient_drug(
     if dose:
         drug.append(E.drugstructuredosagenumb(dose))
 
+    if expiry:
+        drug.append(E.drugdosagetext(f"Expiry date: {expiry}"))
+
     if date:
         dt = datetime.fromisoformat(f"{date}T{time}")
         drug.append(E.drugstartdateformat("102"))
         drug.append(E.drugstartdate(date_format_102(dt)))
         drug.append(E.drugenddateformat("102"))
         drug.append(E.drugenddate(date_format_102(dt)))
-
-    if expiry:
-        drug.append(E.drugdosagetext(f"Expiry date: {expiry}"))
 
     dilutent = []
 
