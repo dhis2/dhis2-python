@@ -38,6 +38,7 @@ def build_messageheader(root: etree.Element, sender_id: str, receiver_id: str):
 def build_safetyreport_patient_drug(
     root: etree.Element,
     name: str,
+    brand: str,
     date: str,
     time: str,
     batch: str,
@@ -51,7 +52,7 @@ def build_safetyreport_patient_drug(
 ):
     drug = etree.SubElement(root, "drug")
     drug.append(E.drugcharacterization("1"))
-    drug.append(E.medicinalproduct(name))
+    drug.append(E.medicinalproduct(f"{name} {brand}"))
     drug.append(E.drugbatchnumb(batch))
 
     if dose:
@@ -97,24 +98,28 @@ def build_safetyreport_patient_drug(
 
 def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
     vaccine1_name = get_data_value("uSVcZzSM3zg", te)
+    vaccine1_brand = get_data_value("JSd0HQOgJ8w", te)
     vaccine1_date = get_data_value("dOkuCjpD978", te)
     vaccine1_time = get_data_value("BSUncNBb20j", te, defaultValue="00:00")
     vaccine1_batch = get_data_value("LNqkAlvGplL", te)
     vaccine1_dose = get_data_value("LIyV4t7eCfZ", te)
     vaccine1_expiry = get_data_value("VFrc8SNFYm7", te)
     vaccine2_name = get_data_value("g9PjywVj2fs", te)
+    vaccine2_brand = get_data_value("eRwc8Y0CNLh", te)
     vaccine2_date = get_data_value("VrzEutEnzSJ", te)
     vaccine2_time = get_data_value("fZFQVZFqu0q", te, defaultValue="00:00")
     vaccine2_batch = get_data_value("b1rSwGRcY5W", te)
     vaccine2_dose = get_data_value("E3F414izniN", te)
     vaccine2_expiry = get_data_value("rVUo2PBgwhr", te)
     vaccine3_name = get_data_value("OU5klvkk3SM", te)
+    vaccine3_brand = get_data_value("wdZrkUvnuyr", te)
     vaccine3_date = get_data_value("f4WCAVwjHz0", te)
     vaccine3_time = get_data_value("VQKdZ1KeD7u", te, defaultValue="00:00")
     vaccine3_batch = get_data_value("YBnFoNouH6f", te)
     vaccine3_dose = get_data_value("WlE0K4xCc14", te)
     vaccine3_expiry = get_data_value("ffYfdSPmM1W", te)
     vaccine4_name = get_data_value("menOXwIFZh5", te)
+    vaccine4_brand = get_data_value("Ptms0lmt4QX", te)
     vaccine4_date = get_data_value("H3TKHMFIN6V", te)
     vaccine4_time = get_data_value("S1PRFSk8Y9v", te, defaultValue="00:00")
     vaccine4_batch = get_data_value("BHAfwo6JPDa", te)
@@ -146,6 +151,7 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
         build_safetyreport_patient_drug(
             root,
             name=vaccine1_name,
+            brand=vaccine1_brand,
             date=vaccine1_date,
             time=vaccine1_time,
             batch=vaccine1_batch or "",
@@ -162,6 +168,7 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
         build_safetyreport_patient_drug(
             root,
             name=vaccine2_name,
+            brand=vaccine2_brand,
             date=vaccine2_date,
             time=vaccine2_time,
             batch=vaccine2_batch or "",
@@ -178,6 +185,7 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
         build_safetyreport_patient_drug(
             root,
             name=vaccine3_name,
+            brand=vaccine3_brand,
             date=vaccine3_date,
             time=vaccine3_time,
             batch=vaccine3_batch or "",
@@ -194,6 +202,7 @@ def build_safetyreport_patient_drugs(root: etree.Element, te: TrackedEntity):
         build_safetyreport_patient_drug(
             root,
             name=vaccine4_name,
+            brand=vaccine4_brand,
             date=vaccine4_date,
             time=vaccine4_time,
             batch=vaccine4_batch or "",
@@ -211,11 +220,12 @@ def build_safetyreport_patient_reaction(root: etree.Element, te: TrackedEntity, 
     p = etree.SubElement(root, "reaction")
     outcome = get_reaction_outcome(te)
     startdate = get_data_value("vNGUuAZA2C2", te)
+    startTime = get_data_value("NyCB1VAOfJd", te, defaultValue="00:00")
 
     p.append(E.primarysourcereaction(reaction))
 
     if startdate:
-        datetime_startdate = datetime.fromisoformat(startdate)
+        datetime_startdate = datetime.fromisoformat(f"{startdate}T{startTime}")
         p.append(E.reactionstartdateformat("203"))
         p.append(E.reactionstartdate(date_format_203(datetime_startdate)))
 
