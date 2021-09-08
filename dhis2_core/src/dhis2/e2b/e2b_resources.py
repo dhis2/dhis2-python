@@ -242,24 +242,20 @@ def build_safetyreport_patient_reaction(root: etree.Element, te: TrackedEntity, 
 
 
 def build_safetyreport_patient_reactions(root: etree.Element, te: TrackedEntity):
-    severe_local_reaction = get_data_value("UNmEidE6M9K", te)
-    severe_above_3_days = get_data_value("We87rvcvd8J", te)
-    severe_beyond_nearest_joint = get_data_value("f8hjxmHOtAB", te)
-    seizures = get_data_value("wCGZpudXuYx", te)
-    seizures_type = get_data_value("Zz4KYO4AsSY", te)
-
-    if severe_local_reaction:
+    if get_data_value("UNmEidE6M9K", te):
         reaction = "Severe local reaction"
 
-        if severe_above_3_days:
+        if get_data_value("We87rvcvd8J", te):
             reaction += ", >3 days"
 
-        if severe_beyond_nearest_joint:
+        if get_data_value("f8hjxmHOtAB", te):
             reaction += ", Beyond nearest joint"
 
         build_safetyreport_patient_reaction(root, te, reaction)
 
-    if seizures:
+    if get_data_value("wCGZpudXuYx", te):
+        seizures_type = get_data_value("Zz4KYO4AsSY", te)
+
         if seizures_type:
             build_safetyreport_patient_reaction(root, te, f"Seizures ({seizures_type})")
         else:
