@@ -293,6 +293,84 @@ def build_safetyreport_patient_reactions(root: etree.Element, te: TrackedEntity)
     if fever_above_38:
         build_safetyreport_patient_reaction(root, te, "Fever (> 38°C)")
 
+    if get_data_value("HY6NIt2FX4A", te):
+        build_safetyreport_patient_reaction(root, te, "Headache")
+
+    if get_data_value("PWOzcN7UCfW", te):
+        build_safetyreport_patient_reaction(root, te, "Irritability")
+
+    if get_data_value("seXW1hERwOo", te):
+        build_safetyreport_patient_reaction(root, te, "Sore Throat")
+
+    if get_data_value("vCfZD893IVe", te):
+        build_safetyreport_patient_reaction(root, te, "Joint Pain")
+
+    if get_data_value("T6tsxbKzikz", te):
+        build_safetyreport_patient_reaction(root, te, "Abdominal Pain")
+
+    if get_data_value("ZdFB8xUhOUM", te):
+        build_safetyreport_patient_reaction(root, te, "Cough")
+
+    if get_data_value("KOt0J61mF61", te):
+        build_safetyreport_patient_reaction(root, te, "Nausea")
+
+    if get_data_value("NAiZTRCHRWL", te):
+        build_safetyreport_patient_reaction(root, te, "Diarrhoea")
+
+    if get_data_value("owRcSysyioE", te):
+        build_safetyreport_patient_reaction(root, te, "Fatigue")
+
+    if get_data_value("cMEIyp0rMo1", te):
+        build_safetyreport_patient_reaction(root, te, "Vomiting")
+
+    if get_data_value("P4oSprWWqrn", te):
+        build_safetyreport_patient_reaction(root, te, "Injection site soreness")
+
+    if get_data_value("KqlCtmOWt4G", te):
+        build_safetyreport_patient_reaction(root, te, "Injection site tenderness")
+
+    if get_data_value("xgqzqv0p2Us", te):
+        build_safetyreport_patient_reaction(root, te, "Skin rash")
+
+    if get_data_value("FC54HsGMErl", te):
+        build_safetyreport_patient_reaction(root, te, "Itching")
+
+    if get_data_value("pzOF4lGIyTU", te):
+        build_safetyreport_patient_reaction(root, te, "Muscle pain")
+
+    if get_data_value("GTyK3p976de", te):
+        build_safetyreport_patient_reaction(root, te, "Persistent crying")
+
+    if get_data_value("sX1SvRadOmn", te):
+        build_safetyreport_patient_reaction(root, te, "Poor breast feeding")
+
+    if get_data_value("QFMRugi3fm6", te):
+        build_safetyreport_patient_reaction(root, te, "Loss of apetite")
+
+    if get_data_value("TPSvWhUfib3", te):
+        build_safetyreport_patient_reaction(root, te, "Chills")
+
+    if get_data_value("OhHYABXmGGe", te):
+        build_safetyreport_patient_reaction(root, te, "Fainting")
+
+    if get_data_value("nKLO8ZNdR0B", te):
+        build_safetyreport_patient_reaction(root, te, "Mild fever")
+
+    if get_data_value("JaZ9yf1dDy3", te):
+        build_safetyreport_patient_reaction(root, te, "Tiredness")
+
+    if get_data_value("wWDenTQ5xBR", te):
+        build_safetyreport_patient_reaction(root, te, "Nasal congestion")
+
+    if get_data_value("GEkI9NzxTmM", te):
+        build_safetyreport_patient_reaction(root, te, "Lymph node enlargement")
+
+    if get_data_value("XluNAFG1wj6", te):
+        build_safetyreport_patient_reaction(root, te, "Dizziness")
+
+    if get_data_value("rjjRNU5yDhT", te):
+        build_safetyreport_patient_reaction(root, te, "Drowsiness")
+
 
 def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
     p = etree.SubElement(root, "patient")
