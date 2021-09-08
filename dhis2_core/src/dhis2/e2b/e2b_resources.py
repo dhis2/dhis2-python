@@ -247,13 +247,6 @@ def build_safetyreport_patient_reactions(root: etree.Element, te: TrackedEntity)
     severe_beyond_nearest_joint = get_data_value("f8hjxmHOtAB", te)
     seizures = get_data_value("wCGZpudXuYx", te)
     seizures_type = get_data_value("Zz4KYO4AsSY", te)
-    abscess = get_data_value("wce39JmsjIK", te)
-    sepsis = get_data_value("tUmgO1Ugv6U", te)
-    encephalopathy = get_data_value("pdpAEuUS1W9", te)
-    toxic_shock_syndrome = get_data_value("Apq4JaueuWR", te)
-    thrombocytopenia = get_data_value("GGLLaieVChK", te)
-    anaphylaxis = get_data_value("MkIgCrCTFyE", te)
-    fever_above_38 = get_data_value("rzhHSqK3lQq", te)
 
     if severe_local_reaction:
         reaction = "Severe local reaction"
@@ -272,25 +265,25 @@ def build_safetyreport_patient_reactions(root: etree.Element, te: TrackedEntity)
         else:
             build_safetyreport_patient_reaction(root, te, "Seizures")
 
-    if abscess:
+    if get_data_value("wce39JmsjIK", te):
         build_safetyreport_patient_reaction(root, te, "Abscess")
 
-    if sepsis:
+    if get_data_value("tUmgO1Ugv6U", te):
         build_safetyreport_patient_reaction(root, te, "Sepsis")
 
-    if encephalopathy:
+    if get_data_value("pdpAEuUS1W9", te):
         build_safetyreport_patient_reaction(root, te, "Encephalopathy")
 
-    if toxic_shock_syndrome:
+    if get_data_value("Apq4JaueuWR", te):
         build_safetyreport_patient_reaction(root, te, "Toxic shock syndrome")
 
-    if thrombocytopenia:
+    if get_data_value("GGLLaieVChK", te):
         build_safetyreport_patient_reaction(root, te, "Thrombocytopenia")
 
-    if anaphylaxis:
+    if get_data_value("MkIgCrCTFyE", te):
         build_safetyreport_patient_reaction(root, te, "Anaphylaxis")
 
-    if fever_above_38:
+    if get_data_value("rzhHSqK3lQq", te):
         build_safetyreport_patient_reaction(root, te, "Fever (> 38°C)")
 
     if get_data_value("HY6NIt2FX4A", te):
