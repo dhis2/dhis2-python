@@ -360,6 +360,11 @@ def build_safetyreport_patient_reactions(root: etree.Element, te: TrackedEntity)
     if get_data_value("rjjRNU5yDhT", te):
         build_safetyreport_patient_reaction(root, te, "Drowsiness")
 
+    other = get_data_value("iTm5wvq16iq", te)
+
+    if other:
+        build_safetyreport_patient_reaction(root, te, other)
+
 
 def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
     p = etree.SubElement(root, "patient")
