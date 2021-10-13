@@ -376,6 +376,9 @@ def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
 
     dt = get_attribute_value("BiTsLcJQ95V", te)
 
+    if not dt:
+        dt = get_attribute_value("NI0QRzJvQ0k", te)  # MU
+
     if dt:
         dt = datetime.fromisoformat(dt)
         dob = dt.strftime("%Y%m%d")
