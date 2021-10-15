@@ -382,9 +382,9 @@ def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
     if dt:
         dt = datetime.fromisoformat(dt)
         dob = dt.strftime("%Y%m%d")
+        p.append(E.patientbirthdateformat("102"))
         p.append(E.patientbirthdate(dob))
 
-    p.append(E.patientbirthdateformat("102"))
     p.append(E.patientsex(get_patient_sex(te)))
 
     if get_yes_no("VXdRoWQOBxG", te):
