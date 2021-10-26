@@ -79,7 +79,7 @@ def get_patient_sex(te: TrackedEntity) -> str:
     if "MALE" == value:
         return "1"
     elif "FEMALE" == value:
-        return "0"
+        return "2"
 
     return ""
 
