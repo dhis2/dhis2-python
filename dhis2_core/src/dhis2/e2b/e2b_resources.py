@@ -475,7 +475,7 @@ def build_safetyreport(
     sr.append(E.receiptdateformat("102"))
     sr.append(E.receiptdate(date_format_102(datetime.now())))
     sr.append(E.additionaldocument("2"))
-    sr.append(E.fulfillexpeditecriteria("1"))
+    # sr.append(E.fulfillexpeditecriteria("1"))
 
     sr.append(
         E.primarysource(

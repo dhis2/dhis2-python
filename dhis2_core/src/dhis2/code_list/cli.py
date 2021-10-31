@@ -50,7 +50,7 @@ def cmd_code_list_icd11(
     )
 
     if option_sets:
-        click.echo(json.dumps(option_sets, indent=2))
+        click.echo(json.dumps(option_sets, indent=2, ensure_ascii=False))
 
 
 @cli_code_list.command("icd10")
@@ -81,7 +81,7 @@ def cmd_code_list_icd10(
     )
 
     if option_sets:
-        click.echo(json.dumps(option_sets, indent=2))
+        click.echo(json.dumps(option_sets, indent=2, ensure_ascii=False))
 
 
 @cli_code_list.command("svcm")
