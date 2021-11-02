@@ -369,9 +369,15 @@ def build_safetyreport_patient_reactions(root: etree.Element, te: TrackedEntity)
 def build_safetyreport_patient(root: etree.Element, te: TrackedEntity):
     p = etree.SubElement(root, "patient")
 
-    name = get_attribute_value("TfdH5KvFmMy", te)
+    given_name = get_attribute_value("TfdH5KvFmMy", te)
+    family_name = get_attribute_value("aW66s2QSosT", te)
 
-    if name:
+    if given_name:
+        name = given_name
+
+        if family_name:
+            name = f"{name} {family_name}"
+
         p.append(E.patientinitial(name))  # should we use name here or not?
 
     dt = get_attribute_value("BiTsLcJQ95V", te)
