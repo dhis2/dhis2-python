@@ -480,13 +480,14 @@ def build_safetyreport(
     sr.append(
         E.primarysource(
             E.reportergivename(get_data_value("uZ9c4fKXuNS", te)),
+            E.reporterorganization(get_data_value("Q20pEixZxCs", te)),  # TODO resolve org unit
+            E.qualification("3"),
         )
     )
 
     sr.append(
         E.sender(
-            E.senderorganization(get_data_value("Q20pEixZxCs", te)),  # TODO resolve org unit
-            E.senderdepartment(get_data_value("Tgi4xP5DCzr", te)),
+            E.senderorganization("DHIS2"),
         )
     )
 
