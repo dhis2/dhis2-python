@@ -483,11 +483,14 @@ def build_safetyreport(
     sr.append(E.additionaldocument("2"))
     # sr.append(E.fulfillexpeditecriteria("1"))
 
+    reporter_name = get_data_value("uZ9c4fKXuNS", te)
+    qualification = "1" if reporter_name.upper().startswith("DR ") else "3"
+
     sr.append(
         E.primarysource(
-            E.reportergivename(get_data_value("uZ9c4fKXuNS", te)),
+            E.reportergivename(reporter_name),
             E.reporterorganization(get_data_value("Q20pEixZxCs", te)),  # TODO resolve org unit
-            E.qualification("3"),
+            E.qualification(qualification),
         )
     )
 
