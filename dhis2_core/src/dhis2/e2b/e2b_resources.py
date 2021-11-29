@@ -502,7 +502,7 @@ def build_safetyreport(
 
     sr.append(
         E.receiver(
-            E.receivertype("5"),
+            E.receivertype("4"),
             E.receiverorganization(receiverorganization),
             E.receivercountrycode(receivercountrycode),
         )
